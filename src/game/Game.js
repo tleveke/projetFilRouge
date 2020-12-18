@@ -23,8 +23,10 @@ function isDraw(cells) {
 
 export const TicTacToe = {
     setup: () => {
-        return {cells: Array(configGame.maxCases).fill(null)};
+
+
         
+        return {cells: Array(configGame.maxCases).fill(null)};
     },
     turn: {
         moveLimit: 1
