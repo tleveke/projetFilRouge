@@ -7,6 +7,8 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
+import NewLobbyComponent from './vues/NewLobbyComponent';
+import JoinLobbyComponent from './vues/JoinLobbyComponent';
 
 export default function App() {
   return (
@@ -29,10 +31,10 @@ export default function App() {
 
         <Switch>
           <Route path="/create-lobby">
-            <About />
+            <NewLobbyComponent />
           </Route>
           <Route path="/rejoindre-lobby">
-            <Topics />
+            <JoinLobbyComponent />
           </Route>
           <Route path="/">
             <Home />
@@ -57,9 +59,6 @@ function Home() {
   )
 }
 
-function About() {
-  return <h2>About</h2>;
-}
 
 function Topics() {
   let match = useRouteMatch();
