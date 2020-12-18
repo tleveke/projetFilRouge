@@ -8,6 +8,8 @@ import {
   useParams
 } from "react-router-dom";
 
+import GameFilRouge from './game/index'
+
 export default function App() {
   return (
     <Router>
@@ -33,6 +35,9 @@ export default function App() {
           </Route>
           <Route path="/rejoindre-lobby">
             <Topics />
+          </Route>
+          <Route path="/game">
+            <GameFilRouge />
           </Route>
           <Route path="/">
             <Home />
