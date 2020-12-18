@@ -1,4 +1,5 @@
 import { INVALID_MOVE } from "boardgame.io/core";
+import {configGame} from "./index"
 
 function IsVictory(cells) {
     const positions = [
@@ -21,9 +22,10 @@ function isDraw(cells) {
 }
 
 export const TicTacToe = {
-    setup: () => ({
-        cells: Array(9).fill(null),
-    }),
+    setup: () => {
+        return {cells: Array(configGame.maxCases).fill(null)};
+        
+    },
     turn: {
         moveLimit: 1
     },
@@ -46,7 +48,7 @@ export const TicTacToe = {
     ai: {
         enumerate: (G, ctx) => {
           let moves = [];
-          for (let i = 0; i < 9; i++) {
+          for (let i = 0; i < configGame.maxCases; i++) {
             if (G.cells[i] === null) {
               moves.push({ move: 'clickCell', args: [i] });
             }
