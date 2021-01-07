@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 
 class Home extends Component {
     lobbyShow(lobby) {
-    return (<li className='list-group list-group-item-action bg-danger'>{lobby}</li>)
+    return (<li key={lobby.id} className='list-group list-group-item-action bg-danger'>{lobby.name}</li>)
     }
-    render(lobbyList = ['Lobby1', 'Lobby2', 'Lobby3']) {
+    render(lobbyList = [{id:1, name:'Lobby1'}, {id:2, name: 'Lobby2'}, {id:3, name: 'Lobby3'}]) {
         return (
             <div className='text-center'>
               <img width='300' className='mt-3' src="img/logo-fil-rouge.jpg" alt=''/>
