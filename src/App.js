@@ -1,5 +1,7 @@
 import React from "react";
 import Home from "./vues/Home";
+import NewLobbyComponent from './vues/NewLobbyComponent';
+import JoinLobbyComponent from './vues/JoinLobbyComponent';
 import { 
   Nav,
   Navbar,
@@ -20,10 +22,10 @@ export default function App() {
       <div className='container'>
         <Switch>
           <Route path="/create-lobby">
-            <About />
+            <NewLobbyComponent />
           </Route>
-          <Route path="/rejoindre-lobby">
-            <Topics />
+          <Route path="/join-lobby">
+            <JoinLobbyComponent />
           </Route>
           <Route path="/" component={Home}> 
           </Route>
@@ -35,13 +37,13 @@ export default function App() {
 function Menu() {
   return (
     <Navbar className="bg-light" expand="lg">
-  <Navbar.Brand href="#home">Fil Rouge</Navbar.Brand>
+  <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
-      <Nav.Link href="#home">Créer un Lobby</Nav.Link>
-      <Nav.Link href="#link">Rejoindre un Lobby</Nav.Link>
-      <Nav.Link href="#link">Le Jeu</Nav.Link>
+      <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
+      <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
+      <Nav.Link href="/game">Le Jeu</Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Navbar>
