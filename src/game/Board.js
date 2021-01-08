@@ -46,11 +46,7 @@ export class TicTacToeBoard extends React.Component {
             tbody.push(<tr key={i}>{cells}</tr>);
         }
 
-        if (firstTurn) {
-            let playerDefaultPosition = configGame.heigth * this.getRndInteger(0,configGame.width) + this.getRndInteger(0,configGame.heigth);
-            console.log("Le positionnement du joueur " + this.props.ctx.currentPlayer + " est => "+ playerDefaultPosition)
-            firstTurn = false;
-        }
+        
 
         
 

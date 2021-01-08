@@ -3,8 +3,10 @@ import { TicTacToe } from './Game'
 import { TicTacToeBoard } from './Board'
 
 
-let width = 20;
-let height = 20;
+let width = 5;
+let height = 5;
+
+const state = {};
 
 export const configGame = {
     width: width,
@@ -15,10 +17,9 @@ export const configGame = {
 
 /*const GameFilRouge = () => {
 
-
     return <Lobby
-        gameServer={`https://localhost:8000`}
-        lobbyServer={`https://localhost:8000`}
+        gameServer={`http://localhost:8000`}
+        lobbyServer={`http://localhost:8000`}
         gameComponents={[
             { game: TicTacToe, board: TicTacToeBoard }
         ]}

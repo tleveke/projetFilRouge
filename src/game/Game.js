@@ -1,5 +1,8 @@
 import { INVALID_MOVE } from "boardgame.io/core";
-import {configGame} from "./index"
+import { configGame } from "./index"
+
+
+const PlayersPositions = [];
 
 function IsVictory(cells) {
     const positions = [
@@ -21,12 +24,34 @@ function isDraw(cells) {
     return cells.filter(c => c === null).length === 0;
 }
 
+function getRndInteger() {
+    let max = configGame.width * configGame.heigth
+    return Math.floor(Math.random() * (max - 0 )) + 0;
+}
+
 export const TicTacToe = {
-    setup: () => {
+    setup: (ctx, setupData) => {
 
+        let G = { cells: Array(configGame.maxCases).fill(null) }
+        console.log("ctx", ctx);
+        console.log("setupData", setupData);
 
-        
-        return {cells: Array(configGame.maxCases).fill(null)};
+        ctx.playOrder.forEach(player => {
+            let siPositionIncorrect = true;
+            while (siPositionIncorrect) {
+
+                let playerDefaultPosition = getRndInteger();
+
+                if (!PlayersPositions.includes(playerDefaultPosition)) {
+
+                    siPositionIncorrect = false;
+                    
+                    G.cells[playerDefaultPosition] = player; 
+                    PlayersPositions[player] = playerDefaultPosition
+                }
+            }
+        });
+        return G;
     },
     turn: {
         moveLimit: 1
@@ -36,7 +61,16 @@ export const TicTacToe = {
             if (G.cells[id] != null) {
                 return INVALID_MOVE
             }
+
+            for (let i = 0; i<G.cells.length;i++) {
+                if (G.cells[i] == ctx.currentPlayer) {
+                    G.cells[i] = null
+                }
+            }
+            
             G.cells[id] = ctx.currentPlayer;
+
+            //TODO : On pourra faire des appels aux API.
         }
     },
     endIf: (G, ctx) => {
@@ -49,13 +83,13 @@ export const TicTacToe = {
     },
     ai: {
         enumerate: (G, ctx) => {
-          let moves = [];
-          for (let i = 0; i < configGame.maxCases; i++) {
-            if (G.cells[i] === null) {
-              moves.push({ move: 'clickCell', args: [i] });
+            let moves = [];
+            for (let i = 0; i < configGame.maxCases; i++) {
+                if (G.cells[i] === null) {
+                    moves.push({ move: 'clickCell', args: [i] });
+                }
             }
-          }
-          return moves;
+            return moves;
         },
-      },
+    },
 }
