@@ -1,8 +1,17 @@
-import { INVALID_MOVE } from "boardgame.io/core";
+import { INVALID_MOVE, TurnOrder } from "boardgame.io/core";
 import { configGame } from "./index"
-
+import {TicTacToeBoard} from "./Board"
 
 const PlayersPositions = [];
+
+const cellVide = {
+    'typeCell' : 'vide',
+    'value' : ''
+} 
+const cellBlock = {
+    'typeCell' : 'impossible',
+    'value' : ''
+} 
 
 function IsVictory(cells) {
     const positions = [
@@ -27,6 +36,25 @@ function isDraw(cells) {
 function getRndInteger() {
     let max = configGame.width * configGame.heigth
     return Math.floor(Math.random() * (max - 0 )) + 0;
+}
+
+function getMovePossible(currentPosition) {
+    let tabMoveCell = [];
+    let tailleGrid = configGame.width;
+
+    if (currentPosition-tailleGrid >= 0) {
+        tabMoveCell.push(currentPosition-tailleGrid)
+    }
+    if (currentPosition+tailleGrid < configGame.maxCases) {
+        tabMoveCell.push(currentPosition+tailleGrid)
+    }
+    if (currentPosition%tailleGrid != tailleGrid-1 ) {
+        tabMoveCell.push(currentPosition+1)
+    }
+    if (currentPosition%tailleGrid != 0 ) {
+        tabMoveCell.push(currentPosition-1)
+    }
+    return tabMoveCell;
 }
 
 export const TicTacToe = {
@@ -54,21 +82,45 @@ export const TicTacToe = {
         return G;
     },
     turn: {
-        moveLimit: 1
+        moveLimit: 1,
+        order:TurnOrder.DEFAULT,
+        onBegin: (G, ctx) => {
+
+            let playerPosition = PlayersPositions[ctx.currentPlayer]
+
+            let tabMoveCell = getMovePossible(playerPosition);
+            tabMoveCell.forEach((movecell) => {
+                if (G.cells[movecell] == null && G.cells[movecell] !== undefined) {
+                    G.cells[movecell] = 'M';
+                }
+            });
+
+
+        },
+        onEnd: (G,ctx) => {
+            G.cells = G.cells.map(cell => { if (cell == 'M') {return null} else {return cell}})
+        }
     },
     moves: {
         clickCell: (G, ctx, id) => {
-            if (G.cells[id] != null) {
+            console.log(id, G.cells[id]);
+
+            if (G.cells[id] !== 'M') {
                 return INVALID_MOVE
             }
+            else if (G.cells[id] !== null && G.cells[id] !== 'M') {
+                console.log('d')
+                return INVALID_MOVE
+            } //TODO: Simplification ? mais ca fonctionne
 
             for (let i = 0; i<G.cells.length;i++) {
-                if (G.cells[i] == ctx.currentPlayer) {
+                if (G.cells[i] === ctx.currentPlayer) {
                     G.cells[i] = null
                 }
             }
             
             G.cells[id] = ctx.currentPlayer;
+            PlayersPositions[ctx.currentPlayer] = id;
 
             //TODO : On pourra faire des appels aux API.
         }
@@ -93,3 +145,30 @@ export const TicTacToe = {
         },
     },
 }
+
+
+/* 
+
+{
+    'typeCell' = 'move',
+    'value' = '';
+}
+
+{
+    'typeCell' = 'vide',
+    'value' = '';
+}
+
+{
+    'typeCell' = 'player',
+    'value' = '';
+}
+
+{
+    'typeCell' = 'item',
+    'value' = '';
+}
+
+
+
+*/

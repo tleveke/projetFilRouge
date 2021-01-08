@@ -1,0 +1,20 @@
+.movePossible {
+    background: blue;
+}
+.opponent {
+    background: tomato;
+}
+.items {
+    background: yellow;
+}
+
+.map {
+    background-image: url('../assets/js/map.png');
+}
+
+.cell {
+    border: 1px solid #555;
+    width: 32px !important;
+    height: 32px !important;
+    text-align: center;
+}

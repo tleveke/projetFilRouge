@@ -1,5 +1,8 @@
 import React from 'react';
 import { configGame } from '.';
+import './BoardStyle.css';
+//import '../../public/js/map';
+import data from '../assets/js/map.json';
 
 let firstTurn = true;
 
@@ -12,8 +15,14 @@ export class TicTacToeBoard extends React.Component {
         this.props.moves.clickCell(id);
     }
 
-    render() {
+    movesCell() {
+        
+    }
 
+
+
+    render() {
+        console.log(data);
         let winner = '';
         if (this.props.ctx.gameover) {
             winner =
@@ -24,24 +33,26 @@ export class TicTacToeBoard extends React.Component {
                     );
         }
 
-        const cellStyle = {
-            border: '1px solid #555',
-            width: '10px',
-            height: '10px',
-            lineHeight: '10px',
-            textAlign: 'center',
-        };
-
         let tbody = [];
         for (let i = 0; i < configGame.width; i++) {
             let cells = [];
             for (let j = 0; j < configGame.heigth; j++) {
                 const id = configGame.heigth * i + j;
                 cells.push(
-                    <td style={cellStyle} className={"cell"+id} key={id} onClick={() => this.onClick(id)}>
+                    <td className={"cell cell"+id} id={id} key={id} onClick={() => this.onClick(id)}>
                         {this.props.G.cells[id]/*id*/}
                     </td>
                 );
+
+                if (document.getElementById(id.toString()) != null) {
+                    if (this.props.G.cells[id] == 'M') {
+                        document.getElementById(id.toString()).classList.add('movePossible')
+                    }
+                    else {
+                        document.getElementById(id.toString()).classList.remove('movePossible')
+                    }
+                }
+
             }
             tbody.push(<tr key={i}>{cells}</tr>);
         }
@@ -55,7 +66,7 @@ export class TicTacToeBoard extends React.Component {
 
         return (
             <div>
-                <table id="board">
+                <table class="map" id="board">
                     <tbody>{tbody}</tbody>
                 </table>
                 {winner}

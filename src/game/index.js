@@ -3,8 +3,8 @@ import { TicTacToe } from './Game'
 import { TicTacToeBoard } from './Board'
 
 
-let width = 5;
-let height = 5;
+let width = 16;
+let height = 16;
 
 const state = {};
 
