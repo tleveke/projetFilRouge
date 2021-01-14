@@ -1,4 +1,4 @@
-import { Client, Lobby } from 'boardgame.io/react'
+import { Client } from 'boardgame.io/react'
 import { TicTacToe } from './Game'
 import { TicTacToeBoard } from './Board'
 
@@ -6,12 +6,13 @@ import { TicTacToeBoard } from './Board'
 let width = 10;
 let height = 10;
 
-const state = {};
-
 export const configGame = {
     width: width,
     heigth: height,
-    maxCases: width * height
+    maxCases: width * height,
+    lifeDefault : 3,
+    powerDefault : 1,
+    speedDefault : 1
 }
 
 
@@ -27,7 +28,8 @@ export const configGame = {
 }*/
 const GameFilRouge = Client({
     game: TicTacToe,
-    board: TicTacToeBoard
+    board: TicTacToeBoard,
+    numPlayers: 4,
 })
 
 export default GameFilRouge;

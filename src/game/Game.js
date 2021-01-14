@@ -1,66 +1,82 @@
 import { INVALID_MOVE, TurnOrder } from "boardgame.io/core";
 import { configGame } from "./index"
-import {TicTacToeBoard} from "./Board"
+import { TicTacToeBoard } from "./Board"
+import { Cell } from './Cell';
+import data from '../assets/js/map.json';
+import { Player } from '../game/Player'
 
-const PlayersPositions = [];
-
-const cellVide = {
-    'typeCell' : 'vide',
-    'value' : ''
-} 
-const cellBlock = {
-    'typeCell' : 'impossible',
-    'value' : ''
-} 
-
-function IsVictory(cells) {
-    const positions = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
-        [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
-    ];
-    const isRowComplete = row => {
-        const symbols = row.map(i => cells[i]);
-        return symbols.every(i =>
-            (i !== null) &&
-            (i === symbols[0])
-        );
+let layerMap = {};
+data.layers.forEach((layer) => {
+    if (layer.id === 1) {
+        layerMap = layer
     }
+})
+const PlayersPositions = [];
+const blockTypeCells = [1, 21, 23, 44, 67, 86, 88, 107, 152]
 
-    return positions.map(isRowComplete).some(i => i === true)
+
+function IsVictory() {
+    let tabAlive = []
+    PlayersPositions.forEach(player => {
+        if (player.etat !== 'dead') {
+            tabAlive.push(player);
+        }
+    })
+    if (tabAlive.length == 1) {
+        return { victory: true, player: tabAlive[0] }
+    }
+    else {
+        return { victory: false }
+    }
 }
-
-function isDraw(cells) {
-    return cells.filter(c => c === null).length === 0;
-}
-
 function getRndInteger() {
     let max = configGame.width * configGame.heigth
-    return Math.floor(Math.random() * (max - 0 )) + 0;
+    return Math.floor(Math.random() * (max - 0)) + 0;
+}
+function getRandomName(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 
-function getMovePossible(currentPosition) {
-    let tabMoveCell = [];
-    let tailleGrid = configGame.width;
+function getMovePossible(player) {
+    const currentPosition = player.position;
+    const speed = player.speed;
+    const tailleGrid = configGame.width;
 
-    if (currentPosition-tailleGrid >= 0) {
-        tabMoveCell.push(currentPosition-tailleGrid)
+    let tabMoveCell = [];
+
+    if (currentPosition - tailleGrid >= 0) {
+        tabMoveCell.push(currentPosition - tailleGrid)
     }
-    if (currentPosition+tailleGrid < configGame.maxCases) {
-        tabMoveCell.push(currentPosition+tailleGrid)
+    if (currentPosition + tailleGrid < configGame.maxCases) {
+        tabMoveCell.push(currentPosition + tailleGrid)
     }
-    if (currentPosition%tailleGrid != tailleGrid-1 ) {
-        tabMoveCell.push(currentPosition+1)
+    if (currentPosition % tailleGrid !== tailleGrid - speed) {
+        tabMoveCell.push(currentPosition + speed)
     }
-    if (currentPosition%tailleGrid != 0 ) {
-        tabMoveCell.push(currentPosition-1)
+    if (currentPosition % tailleGrid !== 0) {
+        tabMoveCell.push(currentPosition - speed)
     }
+
     return tabMoveCell;
 }
 
 export const TicTacToe = {
     setup: (ctx, setupData) => {
 
-        let G = { cells: Array(configGame.maxCases).fill(null) }
+        let G = { cells: [] };
+
+
+        for (let i = 0; i < configGame.maxCases; i++) {
+            var cell = new Cell()
+            G.cells.push(cell)
+        }
+
         console.log("ctx", ctx);
         console.log("setupData", setupData);
 
@@ -70,71 +86,142 @@ export const TicTacToe = {
 
                 let playerDefaultPosition = getRndInteger();
 
-                if (!PlayersPositions.includes(playerDefaultPosition)) {
-
+                if (!PlayersPositions.includes(playerDefaultPosition) && !blockTypeCells.includes(layerMap.data[playerDefaultPosition])) {
                     siPositionIncorrect = false;
-                    
-                    G.cells[playerDefaultPosition] = player; 
-                    PlayersPositions[player] = playerDefaultPosition
+
+                    let namePlayer = getRandomName(5);
+
+                    let playerObject = new Player(playerDefaultPosition, namePlayer, player);
+
+                    G.cells[playerDefaultPosition].setPlayer(playerObject);
+                    PlayersPositions[player] = playerObject
                 }
             }
         });
+
+        console.log('PlayerPosition', PlayersPositions);
+        console.log('GCells', G.cells)
         return G;
     },
-    turn: {
-        moveLimit: 1,
-        order:TurnOrder.DEFAULT,
-        onBegin: (G, ctx) => {
-
-            let playerPosition = PlayersPositions[ctx.currentPlayer]
-
-            let tabMoveCell = getMovePossible(playerPosition);
-            tabMoveCell.forEach((movecell) => {
-                if (G.cells[movecell] == null && G.cells[movecell] !== undefined) {
-                    G.cells[movecell] = 'M';
-                }
-            });
 
 
+
+    phases: {
+
+        movePlayer: { //Phase qui permet de bouger de case, ce lance en premier. Permet eventuellement de attaquer mais passe le tour
+            moves: {
+
+                movePlayer: (G, ctx, id) => {
+                    for (let i = 0; i < G.cells.length; i++) {
+
+                        if (G.cells[i].player === PlayersPositions[ctx.currentPlayer]) {
+                            G.cells[i].setVideCell()
+                        }
+                    }
+
+                    let playerObject = PlayersPositions[ctx.currentPlayer];
+                    playerObject.setPosition(id)
+
+                    G.cells[id].setPlayer(playerObject);
+                    PlayersPositions[ctx.currentPlayer] = playerObject;
+
+                    //ctx.events.setPhase('attackPlayer');
+
+
+                    //TODO; QUAND joueur A coté alors pas de tour passé;
+
+                    /////////// ^  On Bouge  ^//////////
+
+                    //TODO : On pourra faire des appels aux API.
+                },
+
+
+                attackPlayer: (G, ctx, id) => {
+                    let opponent = G.cells[id].player;
+                    let playercurrent = PlayersPositions[ctx.currentPlayer];
+                    G.cells[id].player.setLife(opponent.life - playercurrent.power);
+                },
+            },
+            turn: {
+                moveLimit: 1,
+                order: TurnOrder.DEFAULT,
+                onBegin: (G, ctx) => { // Tout f'abord, vérification si le joueur est mort ou pas. Si non, obtiens les cases possibles pour le déplacement
+                    let player = PlayersPositions[ctx.currentPlayer]
+                    if (player.etat === 'dead') {
+                        ctx.events.pass();
+                    }
+                    else {
+
+                        console.log('playerPosition', player);
+
+                        let tabMoveCell = getMovePossible(player);
+                        tabMoveCell.forEach((movecell) => {
+
+                            if (G.cells[movecell].type === 'vide' && G.cells[movecell] !== undefined && !blockTypeCells.includes(layerMap.data[movecell])) {
+                                G.cells[movecell].setMoveCell();
+                            }
+                            else if (blockTypeCells.includes(layerMap.data[movecell])) {
+                                G.cells[movecell].setBlockCell();
+                            }
+                            else if (G.cells[movecell].type === 'player') {
+                                G.cells[movecell].player.setEtat('threatfull');
+                            }
+                        });
+                    }
+
+                },
+                onEnd: (G, ctx) => { // Permet de reintialiser la map et verifie si un joueur est mort.
+                    G.cells = G.cells.map(cell => {
+                        if (cell.type === 'move' || cell.type === 'block') {
+                            cell.setVideCell()
+                        }
+                        if (cell.type === 'player') {
+                            cell.player.setThreathless();
+                            if (cell.player.life == 0) {
+                                PlayersPositions.forEach((player) => {
+                                    if (cell.player.classCss === player.classCss) {
+                                        cell.setVideCell()
+                                        PlayersPositions[PlayersPositions.indexOf(player)].setDeadPlayer();
+                                    }
+                                })
+                            }
+                        }
+                        return cell
+                    })
+                },
+            },
+            start: true,
         },
-        onEnd: (G,ctx) => {
-            G.cells = G.cells.map(cell => { if (cell == 'M') {return null} else {return cell}})
+
+        attackPlayer: {//Phase qui permet de attaquer une personne => passe le tour
+            turn: {
+                moveLimit: 1,
+                order: TurnOrder.DEFAULT,
+                onBegin: (G, ctx) => {
+                    G.cells.forEach((cell) => {
+                        if (cell.type != 'player') {
+                            cell.setVideCell();
+                        }
+                    })
+                },
+                onEnd: (G, ctx) => {
+                },
+            },
+            moves: {},
         }
+
     },
-    moves: {
-        clickCell: (G, ctx, id) => {
-            console.log(id, G.cells[id]);
 
-            if (G.cells[id] !== 'M') {
-                return INVALID_MOVE
-            }
-            else if (G.cells[id] !== null && G.cells[id] !== 'M') {
-                console.log('d')
-                return INVALID_MOVE
-            } //TODO: Simplification ? mais ca fonctionne
-
-            for (let i = 0; i<G.cells.length;i++) {
-                if (G.cells[i] === ctx.currentPlayer) {
-                    G.cells[i] = null
-                }
-            }
-            
-            G.cells[id] = ctx.currentPlayer;
-            PlayersPositions[ctx.currentPlayer] = id;
-
-            //TODO : On pourra faire des appels aux API.
-        }
-    },
+    turn: {},
     endIf: (G, ctx) => {
-        if (IsVictory(G.cells)) {
-            return { winner: ctx.currentPlayer };
-        }
-        if (isDraw(G.cells)) {
-            return { draw: true };
+        let victory = IsVictory();
+        if (victory.victory) {
+            //console.log('Le vainqueur est :',victory.player)
+            return { winner: victory.player };
         }
     },
     ai: {
-        enumerate: (G, ctx) => {
+        /*enumerate: (G, ctx) => {
             let moves = [];
             for (let i = 0; i < configGame.maxCases; i++) {
                 if (G.cells[i] === null) {
@@ -142,12 +229,52 @@ export const TicTacToe = {
                 }
             }
             return moves;
-        },
+        },*/
     },
 }
 
 
-/* 
+/*
+
+moves: {
+
+        attackPlayer: (G, ctx, id) => {
+            let opponent = G.cells[id].player;
+            let playercurrent = PlayersPositions[ctx.currentPlayer];
+            G.cells[id].player.setLife(opponent.life - playercurrent.power);
+        },
+
+        movePlayer: (G, ctx, id) => {
+            for (let i = 0; i < G.cells.length; i++) {
+
+                if (G.cells[i].player === PlayersPositions[ctx.currentPlayer]) {
+                    G.cells[i].setVideCell()
+                }
+            }
+
+
+
+
+            let playerObject = PlayersPositions[ctx.currentPlayer];
+            playerObject.setPosition(id)
+
+            G.cells[id].setPlayer(playerObject);
+            PlayersPositions[ctx.currentPlayer] = playerObject;
+
+
+            //TODO; QUAND joueur A coté alors pas de tour passé;
+
+
+            /////////// ^  On Bouge  ^//////////
+
+
+
+
+
+
+            //TODO : On pourra faire des appels aux API.
+        }
+    },
 
 {
     'typeCell' = 'move',

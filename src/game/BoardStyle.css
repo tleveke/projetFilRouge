@@ -1,20 +1,49 @@
 .movePossible {
-    background: blue;
+    background: rgba(0, 0, 255, 0.250);
+}
+.moveImpossible {
+    background: rgba(255, 38, 0, 0.25);
 }
 .opponent {
-    background: tomato;
+    background: rgba(135, 29, 143, 0.549);
 }
 .items {
-    background: yellow;
+    background: rgba(255, 255, 0, 0.250);
 }
 
 .map {
+    width: 320px;
+    height: 320px;
     background-image: url('../assets/js/map.png');
+    background-repeat: no-repeat;
+}
+.player {
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: 160%;
+}
+.player0 {
+    background-image: url('../assets/img/cameleon.png');
+}
+.player1 {
+    background-image: url('../assets/img/herisson.png');
+    background-size: 120%;
+}
+.player2 {
+    background-image: url('../assets/img/cochon.png');
+    background-size: 100%;
+}
+.player3 {
+    background-image: url('../assets/img/bat.png');
+}
+.player4 {
+    background-image: url('../assets/img/chicken.png');
+    background-size: 100%;
 }
 
 .cell {
-    border: 1px solid #555;
-    width: 24px !important;
-    height: 24px !important;
+    border: 1px solid rgba(85, 85, 85, 0.396);
+    width: 26px !important;
+    height: 26px !important;
     text-align: center;
 }

@@ -12,63 +12,105 @@ export class TicTacToeBoard extends React.Component {
     }
 
     onClick(id) {
-        this.props.moves.clickCell(id);
+        let cell = this.props.G.cells[id];
+        document.getElementById('error').innerHTML = '';
+        if (cell.type === 'player' && cell.player.etat == 'threatfull') {
+            this.props.moves.attackPlayer(id)
+        }
+        else if (cell.type === 'move') {
+            this.props.moves.movePlayer(id);
+        }
+        else {
+            document.getElementById('error').innerHTML = 'Vous pouvez pas cliquez !'
+        }
     }
-
-    movesCell() {
-        
-    }
-
-
 
     render() {
-        console.log(data);
         let winner = '';
+        let currentPlayer = this.props.ctx.currentPlayer;
         if (this.props.ctx.gameover) {
-            winner =
-                this.props.ctx.gameover.winner !== undefined ? (
-                    <div id="winner">Winner: {this.props.ctx.gameover.winner}</div>
-                ) : (
-                        <div id="winner">Draw!</div>
-                    );
+            console.log('gameover', this.props.ctx.gameover)
+            winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>
+            if (this.props.ctx.gameover.winner.player !== undefined) {
+                console.log('Winner is => ', this.props.ctx.gameover.winner)
+            }
         }
+
 
         let tbody = [];
         for (let i = 0; i < configGame.width; i++) {
             let cells = [];
             for (let j = 0; j < configGame.heigth; j++) {
                 const id = configGame.heigth * i + j;
+
+
                 cells.push(
-                    <td className={"cell cell"+id} id={id} key={id} onClick={() => this.onClick(id)}>
-                        {this.props.G.cells[id]/*id*/}
+                    <td id={id} key={id} onClick={() => this.onClick(id)}>
+                        {this.props.G.cells[id].value/*id*/}
                     </td>
                 );
 
-                if (document.getElementById(id.toString()) != null) {
-                    if (this.props.G.cells[id] == 'M') {
-                        document.getElementById(id.toString()).classList.add('movePossible')
+                let element = document.getElementById(id.toString());
+
+
+
+                if (element != null) {
+
+                    var cell = this.props.G.cells[id];
+
+                    element.classList.remove(...element.classList)
+                    if (cell.type == 'move') {
+                        element.classList.add('movePossible')
                     }
-                    else {
-                        document.getElementById(id.toString()).classList.remove('movePossible')
+                    else if (cell.type == 'player') {
+
+                        element.classList.add('player', cell.player.classCss)
+                        console.log('Player =>', cell.player);
+                        if (`threatfull` == cell.player.etat) {
+                            element.classList.add('opponent');
+                        }
+                        if (cell.player.life === 0) {
+                            element.classList.add('dead');
+                        }
+
+                        if (cell.player.classCss == `player${currentPlayer}`) {
+                            console.log('le player actuel = ', cell.player);
+                            document.getElementById('heart').innerHTML = "";
+                            for (let i = 0; i < cell.player.life; i++) {
+                                var img = document.createElement('img');
+                                img.src = 'img/heart.gif';
+                                document.getElementById('heart').appendChild(img);
+                            }
+                        }
+
                     }
+                    else if (cell.type == 'block') {
+                        element.classList.add('moveImpossible')
+                    }
+                    else if (cell.type == 'opponent') {
+                        element.classList.add('opponent')
+                    }
+                    element.classList.add('cell', 'cell' + id)
                 }
 
             }
             tbody.push(<tr key={i}>{cells}</tr>);
         }
 
-        
 
-        
+
+
 
 
 
 
         return (
             <div>
-                <table class="map" id="board">
+                <table className="map" id="board">
                     <tbody>{tbody}</tbody>
                 </table>
+                <p id='error'></p>
+                <div id="heart" className="heart"></div>
                 {winner}
             </div>
         );
