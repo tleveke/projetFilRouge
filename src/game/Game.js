@@ -163,56 +163,36 @@ export const TicTacToe = {
 
                 moveorAttackPlayer: (G, ctx, id) => {
 
-                    /*console.log(id,ctx)
+                    console.log(id,ctx)
                     let playerActual = PlayersPositions[ctx.currentPlayer];
-                    let play = new Player(null,null,null);
-                    console.log('PlayersPositions',PlayersPositions);
-                    console.log('playerActual',playerActual);
-                    console.log('play',play);
-                    //console.log('playerActual.position',playerActual['position']);*/
-                    /*play.setParameters(playerObject);
-                    play.setPosition(id)
+                    try {
+                        for (let i = 0; i < G.cells.length; i++) {
 
-                    G.cells[id].setPlayer(play);
-                    PlayersPositions[ctx.currentPlayer] = play;*/
-
-                    //play.setPosition(67)
-                    /*playerObject.setPosition(id)
-
-                    G.cells[id].setPlayer(playerObject);
-                    PlayersPositions[ctx.currentPlayer] = playerObject;
-                    console.log(playerObject)*/
-
-
-                    for (let i = 0; i < G.cells.length; i++) {
-
-                        if (G.cells[i].player === PlayersPositions[ctx.currentPlayer]) {
-                            G.cells[i].setVideCell()
+                            if (G.cells[i].player === playerActual) {
+                                G.cells[i].setVideCell()
+                            }
                         }
+                        playerActual.setPosition(id)
+                        G.cells[id].setPlayer(playerActual);
+                        PlayersPositions[ctx.currentPlayer] = playerActual;
                     }
-
-                    let playerObject = PlayersPositions[ctx.currentPlayer];
-                    playerObject.setPosition(id)
-
-                    G.cells[id].setPlayer(playerObject);
-                    PlayersPositions[ctx.currentPlayer] = playerObject;
-
-                    //ctx.events.setPhase('attackPlayer');
-
-
-                    //TODO; QUAND joueur A coté alors pas de tour passé;
-
-                    /////////// ^  On Bouge  ^//////////
-
-                    //TODO : On pourra faire des appels aux API.
+                    catch {
+                        console.log('pas possible')
+                    }
+                    
                 },
 
 
                 attackPlayer: (G, ctx, id) => {
-                    let opponent = G.cells[id].player;
-                    let playercurrent = PlayersPositions[ctx.currentPlayer];
-                    console.log(playercurrent);
-                    G.cells[id].player.setLife(opponent.life - playercurrent.power);
+                    try {
+                        let opponent = G.cells[id].player;
+                        let playercurrent = PlayersPositions[ctx.currentPlayer];
+                        console.log(playercurrent);
+                        G.cells[id].player.setLife(opponent.life - playercurrent.power);
+                    }
+                    catch {
+                        console.log('pas possible')
+                    }
                 },
             },
             turn: {
