@@ -2,10 +2,10 @@ import React from "react";
 import Home from "./vues/Home";
 import NewLobbyComponent from './vues/NewLobbyComponent';
 import JoinLobbyComponent from './vues/JoinLobbyComponent';
-import { 
+import {
   Nav,
   Navbar,
- } from 'react-bootstrap';
+} from 'react-bootstrap';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,7 +18,7 @@ import Multiplayer from './game/multiplayer'
 export default function App() {
   return (
     <Router >
-    <Menu/>
+      <Menu />
       <div className='container'>
         <Switch>
           <Route path="/create-lobby">
@@ -28,32 +28,33 @@ export default function App() {
             <JoinLobbyComponent />
           </Route>
           <Route path="/game">
-            <GameFilRouge/>
+            <GameFilRouge />
           </Route>
           <Route path="/multiplayer">
             <Multiplayer />
           </Route>
-          <Route path="/" component={Home}> 
+          <Route path="/" component={Home}>
           </Route>
         </Switch>
       </div>
+
     </Router>
   );
 }
 function Menu() {
   return (
     <Navbar className="bg-light" expand="lg">
-  <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
-  <Navbar.Toggle aria-controls="basic-navbar-nav" />
-  <Navbar.Collapse id="basic-navbar-nav">
-    <Nav className="mr-auto">
-      <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
-      <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
-      <Nav.Link href="/game">Le Jeu</Nav.Link>
-      <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
-    </Nav>
-  </Navbar.Collapse>
-</Navbar>
+      <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
+          <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
+          <Nav.Link href="/game">Le Jeu</Nav.Link>
+          <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 

@@ -14,7 +14,7 @@
 .map {
     width: 320px;
     height: 320px;
-    background-image: url('../assets/js/map.png');
+    background-image: url('../assets/img/map.png');
     background-repeat: no-repeat;
 }
 .player {

@@ -76,7 +76,7 @@ export class TicTacToeBoard extends React.Component {
                             document.getElementById('heart').innerHTML = "";
                             for (let i = 0; i < cell.player.life; i++) {
                                 var img = document.createElement('img');
-                                img.src = 'img/heart.gif';
+                                img.src = '/img/heart.gif';
                                 document.getElementById('heart').appendChild(img);
                             }
                         }
