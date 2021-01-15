@@ -1,4 +1,3 @@
-
 let width = 10;
 let height = 10;
 
@@ -10,5 +9,5 @@ export const configGame = {
     powerDefault : 1,
     speedDefault : 2,
     serverPort : 12538,
-    httpORs : 'https'
+    httpORs : 'http'
 }

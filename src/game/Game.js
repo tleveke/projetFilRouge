@@ -175,6 +175,9 @@ export const TicTacToe = {
                         playerActual.setPosition(id)
                         G.cells[id].setPlayer(playerActual);
                         PlayersPositions[ctx.currentPlayer] = playerActual;
+
+                        //ctx.events.setPhase('attackPlayer');
+
                     }
                     catch {
                         console.log('pas possible')
