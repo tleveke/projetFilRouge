@@ -9,11 +9,11 @@ import {
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams
+  Route
 } from "react-router-dom";
+
+import GameFilRouge from './game/index'
+import Multiplayer from './game/multiplayer'
 
 export default function App() {
   return (
@@ -26,6 +26,12 @@ export default function App() {
           </Route>
           <Route path="/join-lobby">
             <JoinLobbyComponent />
+          </Route>
+          <Route path="/game">
+            <GameFilRouge/>
+          </Route>
+          <Route path="/multiplayer">
+            <Multiplayer />
           </Route>
           <Route path="/" component={Home}> 
           </Route>
