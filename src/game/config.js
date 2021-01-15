@@ -9,5 +9,5 @@ export const configGame = {
     powerDefault : 1,
     speedDefault : 2,
     serverPort : 12538,
-    httpORs : 'http'
+    httpORs : 'https'
 }
