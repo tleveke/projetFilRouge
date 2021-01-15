@@ -1,5 +1,5 @@
 import React from 'react';
-import { configGame } from '.';
+import { configGame } from './config';
 import './BoardStyle.css';
 //import '../../public/js/map';
 import data from '../assets/js/map.json';
@@ -18,7 +18,7 @@ export class TicTacToeBoard extends React.Component {
             this.props.moves.attackPlayer(id)
         }
         else if (cell.type === 'move') {
-            this.props.moves.movePlayer(id);
+            this.props.moves.moveorAttackPlayer(id);
         }
         else {
             document.getElementById('error').innerHTML = 'Vous pouvez pas cliquez !'
@@ -65,7 +65,6 @@ export class TicTacToeBoard extends React.Component {
                     else if (cell.type == 'player') {
 
                         element.classList.add('player', cell.player.classCss)
-                        console.log('Player =>', cell.player);
                         if (`threatfull` == cell.player.etat) {
                             element.classList.add('opponent');
                         }
@@ -74,7 +73,6 @@ export class TicTacToeBoard extends React.Component {
                         }
 
                         if (cell.player.classCss == `player${currentPlayer}`) {
-                            console.log('le player actuel = ', cell.player);
                             document.getElementById('heart').innerHTML = "";
                             for (let i = 0; i < cell.player.life; i++) {
                                 var img = document.createElement('img');

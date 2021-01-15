@@ -1,9 +1,9 @@
-import { Client,Lobby } from 'boardgame.io/react'
+import { Lobby } from 'boardgame.io/react'
 import { TicTacToe } from './Game'
 import { TicTacToeBoard } from './Board'
 import { configGame } from './config'
 
-/*const GameFilRouge = () => {
+const Multiplayer = () => {
 
     return <Lobby
         gameServer={`http://${window.location.hostname}:${configGame.serverPort}`}
@@ -12,12 +12,6 @@ import { configGame } from './config'
             { game: TicTacToe, board: TicTacToeBoard }
         ]}
     />;
-}*/
+}
 
-const GameFilRouge = Client({
-    game: TicTacToe,
-    board: TicTacToeBoard,
-    numPlayers: 4,
-})
-
-export default GameFilRouge;
+export default Multiplayer;

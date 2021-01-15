@@ -1,9 +1,8 @@
 import { INVALID_MOVE, TurnOrder } from "boardgame.io/core";
-import { configGame } from "./index"
-import { TicTacToeBoard } from "./Board"
+import { configGame } from "./config"
 import { Cell } from './Cell';
 import data from '../assets/js/map.json';
-import { Player } from '../game/Player'
+import { Player } from './Player'
 
 let layerMap = {};
 data.layers.forEach((layer) => {
@@ -43,44 +42,97 @@ function getRandomName(length) {
     return result;
 }
 
-function getMovePossible(player) {
+function getMovePossible(player, G) {
     const currentPosition = player.position;
     const speed = player.speed;
-    const tailleGrid = configGame.width;
+    const tailleGrid = configGame.maxCases;
 
-    let tabMoveCell = [];
+    const cellcurrent = G.cells[currentPosition];
+    const tabMoveCellStr = [];
+    const tabMoveCell = [];
 
-    if (currentPosition - tailleGrid >= 0) {
-        tabMoveCell.push(currentPosition - tailleGrid)
+    let car1 = 1;
+    let car2 = 2;
+
+    for (let i = 1; i <= speed; i++) {
+
+        tabMoveCellStr.push(`${cellcurrent.x}${cellcurrent.y - i}`)
+        tabMoveCellStr.push(`${cellcurrent.x}${cellcurrent.y + i}`)
+        tabMoveCellStr.push(`${cellcurrent.x - i}${cellcurrent.y}`)
+        tabMoveCellStr.push(`${cellcurrent.x + i}${cellcurrent.y}`)
+        if (i === 2) {
+            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y - car1}`)
+        }
+        else if (i === 3) {
+            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y + car2}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car2}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car2}`)
+            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y - car2}`)
+
+            tabMoveCellStr.push(`${cellcurrent.x - car2}${cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car2}${cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x + car2}${cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${cellcurrent.x - car2}${cellcurrent.y - car1}`)
+        }
     }
-    if (currentPosition + tailleGrid < configGame.maxCases) {
-        tabMoveCell.push(currentPosition + tailleGrid)
-    }
-    if (currentPosition % tailleGrid !== tailleGrid - speed) {
-        tabMoveCell.push(currentPosition + speed)
-    }
-    if (currentPosition % tailleGrid !== 0) {
-        tabMoveCell.push(currentPosition - speed)
-    }
+    tabMoveCellStr.forEach(cell => {
+        let cellInt = parseInt(cell);
+        if (cellInt >= 0 && cellInt < 100 && !cell.includes('-')) {
+            tabMoveCell.push(cellInt)
+        }
+    })
 
     return tabMoveCell;
 }
 
+function blockCells(tabMoveCell,player, G) { //Permet d'enlevez la possibilité de bouger dans des cases qui est bloquer par une case bloquer
+
+    tabMoveCell.forEach((movecell) => { 
+        let cell = G.cells[movecell];
+
+        let cellplus1 = G.cells[movecell + 1];
+        let cellmoins1 = G.cells[movecell - 1];
+        let cellplus10 = G.cells[movecell + 10];
+        let cellmoins10 = G.cells[movecell - 10];
+
+        if (cell.type == 'block') {
+            if (cellmoins10 != undefined && cellmoins10.type == 'move' && player.position == movecell + 10) {
+                G.cells[movecell - 10].setBlockCell();
+            }
+            if (cellplus10 != undefined && cellplus10.type == 'move' && player.position == movecell - 10) {
+                G.cells[movecell + 10].setBlockCell();
+            }
+            if (cellmoins1 != undefined && cellmoins1.type == 'move' && player.position == movecell + 1) {
+                G.cells[movecell - 1].setBlockCell();
+            }
+            if (cellplus1 != undefined && cellplus1.type == 'move' && player.position == movecell - 1) {
+                G.cells[movecell + 1].setBlockCell();
+            }
+        }
+    });
+}
+
 export const TicTacToe = {
+    name:'Jeu_Fil_Rouge',
+    minPlayers: 2,
+    maxPlayers: 5,
     setup: (ctx, setupData) => {
 
         let G = { cells: [] };
 
-
-        for (let i = 0; i < configGame.maxCases; i++) {
-            var cell = new Cell()
-            G.cells.push(cell)
+        for (let x = 0; x < configGame.heigth; x++) {
+            for (let y = 0; y < configGame.width; y++) {
+                var cell = new Cell(x, y)
+                G.cells.push(cell)
+            }
         }
 
-        console.log("ctx", ctx);
-        console.log("setupData", setupData);
 
         ctx.playOrder.forEach(player => {
+
             let siPositionIncorrect = true;
             while (siPositionIncorrect) {
 
@@ -98,9 +150,7 @@ export const TicTacToe = {
                 }
             }
         });
-
-        console.log('PlayerPosition', PlayersPositions);
-        console.log('GCells', G.cells)
+        console.log('d')
         return G;
     },
 
@@ -111,7 +161,29 @@ export const TicTacToe = {
         movePlayer: { //Phase qui permet de bouger de case, ce lance en premier. Permet eventuellement de attaquer mais passe le tour
             moves: {
 
-                movePlayer: (G, ctx, id) => {
+                moveorAttackPlayer: (G, ctx, id) => {
+
+                    /*console.log(id,ctx)
+                    let playerActual = PlayersPositions[ctx.currentPlayer];
+                    let play = new Player(null,null,null);
+                    console.log('PlayersPositions',PlayersPositions);
+                    console.log('playerActual',playerActual);
+                    console.log('play',play);
+                    //console.log('playerActual.position',playerActual['position']);*/
+                    /*play.setParameters(playerObject);
+                    play.setPosition(id)
+
+                    G.cells[id].setPlayer(play);
+                    PlayersPositions[ctx.currentPlayer] = play;*/
+
+                    //play.setPosition(67)
+                    /*playerObject.setPosition(id)
+
+                    G.cells[id].setPlayer(playerObject);
+                    PlayersPositions[ctx.currentPlayer] = playerObject;
+                    console.log(playerObject)*/
+
+
                     for (let i = 0; i < G.cells.length; i++) {
 
                         if (G.cells[i].player === PlayersPositions[ctx.currentPlayer]) {
@@ -139,6 +211,7 @@ export const TicTacToe = {
                 attackPlayer: (G, ctx, id) => {
                     let opponent = G.cells[id].player;
                     let playercurrent = PlayersPositions[ctx.currentPlayer];
+                    console.log(playercurrent);
                     G.cells[id].player.setLife(opponent.life - playercurrent.power);
                 },
             },
@@ -152,21 +225,24 @@ export const TicTacToe = {
                     }
                     else {
 
-                        console.log('playerPosition', player);
 
-                        let tabMoveCell = getMovePossible(player);
+                        let tabMoveCell = getMovePossible(player, G);
+
                         tabMoveCell.forEach((movecell) => {
-
-                            if (G.cells[movecell].type === 'vide' && G.cells[movecell] !== undefined && !blockTypeCells.includes(layerMap.data[movecell])) {
+                            if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'vide' && !blockTypeCells.includes(layerMap.data[movecell])) {
                                 G.cells[movecell].setMoveCell();
                             }
                             else if (blockTypeCells.includes(layerMap.data[movecell])) {
                                 G.cells[movecell].setBlockCell();
                             }
-                            else if (G.cells[movecell].type === 'player') {
+                            else if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'player') {
                                 G.cells[movecell].player.setEtat('threatfull');
                             }
                         });
+
+                        blockCells(tabMoveCell,player,G)
+
+
                     }
 
                 },

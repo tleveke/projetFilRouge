@@ -1,4 +1,4 @@
-import {configGame} from './index'
+import {configGame} from './config'
 
 export class Player {
     position = null;
@@ -42,6 +42,17 @@ export class Player {
         this.position = null;
         this.power = null;
         this.etat = 'dead';
+    }
+
+
+    setParameters(object) {
+        this.position = object.position;
+        this.name = object.name;
+        this.life = object.life;
+        this.power = object.power;
+        this.speed = object.speed;
+        this.classCss = object.classCss;
+        this.etat = object.etat
     }
 
 }

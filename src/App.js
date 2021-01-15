@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import GameFilRouge from './game/index'
+import Multiplayer from './game/multiplayer'
 
 export default function App() {
   return (
@@ -27,6 +28,9 @@ export default function App() {
           <li>
             <Link to="/game">Le Jeu</Link>
           </li>
+          <li>
+            <Link to="/multiplayer">Multiplayer</Link>
+          </li>
         </ul>
 
         <Switch>
@@ -38,6 +42,9 @@ export default function App() {
           </Route>
           <Route path="/game">
             <GameFilRouge />
+          </Route>
+          <Route path="/multiplayer">
+            <Multiplayer />
           </Route>
           <Route path="/">
             <Home />

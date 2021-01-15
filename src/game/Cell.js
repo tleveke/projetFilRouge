@@ -1,10 +1,14 @@
 export class Cell {
 
+    x=null;
+    y=null;
     type='';
     value='';
     player='';
 
-    constructor() {
+    constructor(cX,cY) {
+        this.x = cX;
+        this.y = cY;
         this.setVideCell()
     }
 
