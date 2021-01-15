@@ -50,6 +50,7 @@ function Menu() {
       <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
       <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
       <Nav.Link href="/game">Le Jeu</Nav.Link>
+      <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Navbar>
