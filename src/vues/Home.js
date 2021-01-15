@@ -6,7 +6,7 @@ class Home extends Component {
     }
     render(lobbyList = [{id:1, name:'Lobby1'}, {id:2, name: 'Lobby2'}, {id:3, name: 'Lobby3'}]) {
         return (
-            <div className='text-center'>
+            <div className='text-center col-lg-5 mx-auto'>
               <img width='300' className='mt-3' src="img/logo-fil-rouge.png" alt=''/>
               <div>
                 <button className='btn btn-success mt-3'>Créer un lobby</button>
