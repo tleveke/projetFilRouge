@@ -236,13 +236,8 @@ export const TicTacToe = {
                         }
                         if (cell.type === 'player') {
                             cell.player.setThreathless();
-<<<<<<< HEAD
-                            if (cell.player.life == 0) {
-                                G.PlayersPositions.forEach((player) => {
-=======
                             if (cell.player.life === 0) {
                                 PlayersPositions.forEach((player) => {
->>>>>>> main
                                     if (cell.player.classCss === player.classCss) {
                                         cell.setVideCell()
                                         G.PlayersPositions[G.PlayersPositions.indexOf(player)].setDeadPlayer();

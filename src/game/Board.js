@@ -1,14 +1,11 @@
 import React from 'react';
 import { configGame } from './config';
 import './BoardStyle.css';
-<<<<<<< HEAD
 //import '../../public/js/map';
 import data from '../assets/js/map.json';
 import { Button } from 'react-bootstrap';
 
 const publicVKey = "BERS0qIV52YrS3vpWLTtx8t3a3LrXfqrazefmqy5o_TuQ6ZC2TDkWmQb1ZmUeeVxRmQjeGsi0Aah-sod4PKP5M4";
-=======
->>>>>>> main
 
 
 export class TicTacToeBoard extends React.Component {
