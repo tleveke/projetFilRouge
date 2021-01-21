@@ -42,7 +42,7 @@ export class TicTacToeBoard extends React.Component {
                 applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
             });
 
-            await fetch('http://localhost:12538/subscription', {
+            await fetch('https://server.lamft-dev.tk/subscription', {
                 method: 'POST',
                 body: JSON.stringify(subscription),
                 headers: {
@@ -55,6 +55,7 @@ export class TicTacToeBoard extends React.Component {
     getNotification() {
         if (('Notification' in window)) {
             Notification.requestPermission();
+            getNotifServiceWorker();
         }
     }
 
@@ -77,7 +78,6 @@ export class TicTacToeBoard extends React.Component {
     }
 
     render() {
-        this.getNotifServiceWorker();
         let winner = '';
         let currentPlayer = this.props.ctx.currentPlayer;
         if (this.props.ctx.gameover) {

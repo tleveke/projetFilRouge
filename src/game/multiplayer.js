@@ -6,8 +6,8 @@ import { configGame } from './config'
 const Multiplayer = () => {
 
     return <Lobby
-        gameServer={`${configGame.httpORs}://evening-reaches-67290.herokuapp.com`}
-        lobbyServer={`${configGame.httpORs}://evening-reaches-67290.herokuapp.com`}
+        gameServer={`${configGame.httpORs}://${configGame.urlServer}`}
+        lobbyServer={`${configGame.httpORs}://${configGame.urlServer}`}
         gameComponents={[
             { game: TicTacToe, board: TicTacToeBoard }
         ]}

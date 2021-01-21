@@ -10,6 +10,7 @@
     "cors": "^2.8.5",
     "esm": "^3.2.25",
     "koa-body": "^4.2.0",
+    "mongodb": "^3.6.3",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
@@ -22,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "nodemon -r esm src/server/server.js",
+    "server": "node -r esm src/server/server.js",
     "prod": "npm run build && serve -s build"
   },
   "eslintConfig": {
