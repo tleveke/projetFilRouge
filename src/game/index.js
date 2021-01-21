@@ -1,4 +1,4 @@
-import { Client,Lobby } from 'boardgame.io/react'
+import { Client, Lobby } from 'boardgame.io/react'
 import { TicTacToe } from './Game'
 import { TicTacToeBoard } from './Board'
 import { configGame } from './config'
@@ -19,5 +19,6 @@ const GameFilRouge = Client({
     board: TicTacToeBoard,
     numPlayers: 4,
 })
+
 
 export default GameFilRouge;

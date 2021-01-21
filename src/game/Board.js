@@ -3,10 +3,61 @@ import { configGame } from './config';
 import './BoardStyle.css';
 //import '../../public/js/map';
 import data from '../assets/js/map.json';
+import { Button } from 'react-bootstrap';
 
-let firstTurn = true;
+const publicVKey = "BERS0qIV52YrS3vpWLTtx8t3a3LrXfqrazefmqy5o_TuQ6ZC2TDkWmQb1ZmUeeVxRmQjeGsi0Aah-sod4PKP5M4";
+
 
 export class TicTacToeBoard extends React.Component {
+
+
+    urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    };
+
+    showNotification() {
+        const notif = new Notification("Vous pouvez jouer !", { body: "C'est à votre tour, vous pouvez jouer votre tour !", icon: 'img/attack_notification.svg', badge: "img/logo-fil-rouge.png" });
+        notif.addEventListener('click', (e) => {
+            window.open('/game', "_blank")
+        })
+    }
+
+    async getNotifServiceWorker() {
+        if (!('Notification' in window)) return;
+        if (Notification.permission === "granted") {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
+            });
+
+            await fetch('http://localhost:12538/subscription', {
+                method: 'POST',
+                body: JSON.stringify(subscription),
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
+        }
+    }
+
+    getNotification() {
+        if (('Notification' in window)) {
+            Notification.requestPermission();
+        }
+    }
+
     getRndInteger(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -26,6 +77,7 @@ export class TicTacToeBoard extends React.Component {
     }
 
     render() {
+        this.getNotifServiceWorker();
         let winner = '';
         let currentPlayer = this.props.ctx.currentPlayer;
         if (this.props.ctx.gameover) {
@@ -79,6 +131,13 @@ export class TicTacToeBoard extends React.Component {
                                 img.src = '/img/heart.gif';
                                 document.getElementById('heart').appendChild(img);
                             }
+
+                            if (Notification.permission === "granted") {
+                                //Afficher notification
+                                this.showNotification()
+                            }
+
+
                         }
 
                     }
@@ -93,6 +152,11 @@ export class TicTacToeBoard extends React.Component {
 
             }
             tbody.push(<tr key={i}>{cells}</tr>);
+        }
+
+        let buttonNotif;
+        if (Notification.permission !== 'denied' && Notification.permission !== 'granted') {
+            buttonNotif = <Button variant="info" onClick={this.getNotification}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications</Button>;
         }
 
 
@@ -110,6 +174,7 @@ export class TicTacToeBoard extends React.Component {
                 <p id='error'></p>
                 <div id="heart" className="heart"></div>
                 {winner}
+                {buttonNotif}
             </div>
         );
     }

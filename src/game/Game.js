@@ -10,13 +10,12 @@ data.layers.forEach((layer) => {
         layerMap = layer
     }
 })
-const PlayersPositions = [];
 const blockTypeCells = [1, 21, 23, 44, 67, 86, 88, 107, 152]
 
 
-function IsVictory() {
+function IsVictory(G) {
     let tabAlive = []
-    PlayersPositions.forEach(player => {
+    G.PlayersPositions.forEach(player => {
         if (player.etat !== 'dead') {
             tabAlive.push(player);
         }
@@ -122,6 +121,7 @@ export const TicTacToe = {
     setup: (ctx, setupData) => {
 
         let G = { cells: [] };
+        G.PlayersPositions = [];
 
         for (let x = 0; x < configGame.heigth; x++) {
             for (let y = 0; y < configGame.width; y++) {
@@ -138,7 +138,7 @@ export const TicTacToe = {
 
                 let playerDefaultPosition = getRndInteger();
 
-                if (!PlayersPositions.includes(playerDefaultPosition) && !blockTypeCells.includes(layerMap.data[playerDefaultPosition])) {
+                if (!G.PlayersPositions.includes(playerDefaultPosition) && !blockTypeCells.includes(layerMap.data[playerDefaultPosition])) {
                     siPositionIncorrect = false;
 
                     let namePlayer = getRandomName(5);
@@ -146,7 +146,7 @@ export const TicTacToe = {
                     let playerObject = new Player(playerDefaultPosition, namePlayer, player);
 
                     G.cells[playerDefaultPosition].setPlayer(playerObject);
-                    PlayersPositions[player] = playerObject
+                    G.PlayersPositions[player] = playerObject
                 }
             }
         });
@@ -164,7 +164,7 @@ export const TicTacToe = {
                 moveorAttackPlayer: (G, ctx, id) => {
 
                     console.log(id,ctx)
-                    let playerActual = PlayersPositions[ctx.currentPlayer];
+                    let playerActual = G.PlayersPositions[ctx.currentPlayer];
                     try {
                         for (let i = 0; i < G.cells.length; i++) {
 
@@ -174,7 +174,7 @@ export const TicTacToe = {
                         }
                         playerActual.setPosition(id)
                         G.cells[id].setPlayer(playerActual);
-                        PlayersPositions[ctx.currentPlayer] = playerActual;
+                        G.PlayersPositions[ctx.currentPlayer] = playerActual;
 
                         //ctx.events.setPhase('attackPlayer');
 
@@ -189,7 +189,7 @@ export const TicTacToe = {
                 attackPlayer: (G, ctx, id) => {
                     try {
                         let opponent = G.cells[id].player;
-                        let playercurrent = PlayersPositions[ctx.currentPlayer];
+                        let playercurrent = G.PlayersPositions[ctx.currentPlayer];
                         console.log(playercurrent);
                         G.cells[id].player.setLife(opponent.life - playercurrent.power);
                     }
@@ -202,7 +202,7 @@ export const TicTacToe = {
                 moveLimit: 1,
                 order: TurnOrder.DEFAULT,
                 onBegin: (G, ctx) => { // Tout f'abord, vérification si le joueur est mort ou pas. Si non, obtiens les cases possibles pour le déplacement
-                    let player = PlayersPositions[ctx.currentPlayer]
+                    let player = G.PlayersPositions[ctx.currentPlayer]
                     if (player.etat === 'dead') {
                         ctx.events.pass();
                     }
@@ -237,10 +237,10 @@ export const TicTacToe = {
                         if (cell.type === 'player') {
                             cell.player.setThreathless();
                             if (cell.player.life == 0) {
-                                PlayersPositions.forEach((player) => {
+                                G.PlayersPositions.forEach((player) => {
                                     if (cell.player.classCss === player.classCss) {
                                         cell.setVideCell()
-                                        PlayersPositions[PlayersPositions.indexOf(player)].setDeadPlayer();
+                                        G.PlayersPositions[G.PlayersPositions.indexOf(player)].setDeadPlayer();
                                     }
                                 })
                             }
@@ -273,7 +273,7 @@ export const TicTacToe = {
 
     turn: {},
     endIf: (G, ctx) => {
-        let victory = IsVictory();
+        let victory = IsVictory(G);
         if (victory.victory) {
             //console.log('Le vainqueur est :',victory.player)
             return { winner: victory.player };
