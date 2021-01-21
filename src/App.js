@@ -1,60 +1,61 @@
 import React from "react";
+import Home from "./vues/Home";
+import NewLobbyComponent from './vues/NewLobbyComponent';
+import JoinLobbyComponent from './vues/JoinLobbyComponent';
+import GameFilRouge from './game/index'
+import Multiplayer from './game/multiplayer'
+import { 
+  Nav,
+  Navbar,
+} from 'react-bootstrap';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link,
+  Route
 } from "react-router-dom";
-import NewLobbyComponent from './vues/NewLobbyComponent';
-import JoinLobbyComponent from './vues/JoinLobbyComponent';
+
+
 
 export default function App() {
   return (
-    <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Accueil</Link>
-          </li>
-          <li>
-            <Link to="/create-lobby">Créer un Lobby</Link>
-          </li>
-          <li>
-            <Link to="/rejoindre-lobby">Rejoindre un Lobby</Link>
-          </li>
-          <li>
-            <Link to="/game">Le Jeu</Link>
-          </li>
-        </ul>
-
+    <Router >
+      <Menu />
+      <div className='container'>
         <Switch>
           <Route path="/create-lobby">
             <NewLobbyComponent />
           </Route>
-          <Route path="/rejoindre-lobby">
+          <Route path="/join-lobby">
             <JoinLobbyComponent />
           </Route>
-          <Route path="/">
-            <Home />
+          <Route path="/game">
+            <GameFilRouge />
+          </Route>
+          <Route path="/multiplayer">
+            <Multiplayer />
+          </Route>
+          <Route path="/" component={Home}>
           </Route>
         </Switch>
       </div>
+
     </Router>
   );
 }
-
-function Home() {
+function Menu() {
   return (
-    <div>
-      <h2>Accueil dev</h2>
-      {/* Ici on a un bouton pour rejoindre aléatoirement un lobby */}
-
-
-
-
-      {/* Ici on a une liste de tous les lobbys pour rejoindre un lobby en cliquant dessus*/}
-    </div>
-  )
+    <Navbar className="bg-light" expand="lg">
+      <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
+          <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
+          <Nav.Link href="/game">Le Jeu</Nav.Link>
+          <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  );
 }
-
 
