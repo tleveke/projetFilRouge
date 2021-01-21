@@ -156,5 +156,9 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+self.addEventListener('push', (e) => {
+  const message = e.data.json();
+  self.registration.showNotification(message.title, {/* ... */ });
+});
 
 // Any other custom service worker logic can go here.
