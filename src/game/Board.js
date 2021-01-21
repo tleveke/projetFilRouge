@@ -5,7 +5,7 @@ import './BoardStyle.css';
 import data from '../assets/js/map.json';
 import { Button } from 'react-bootstrap';
 
-const publicVKey = "BERS0qIV52YrS3vpWLTtx8t3a3LrXfqrazefmqy5o_TuQ6ZC2TDkWmQb1ZmUeeVxRmQjeGsi0Aah-sod4PKP5M4";
+const publicVKey = "BItfWGr9-A8X6Jaoy6AHkRyrs4UPEg1Om2cu8iOeaihiF0zVVNbJsYPOViovgSXYP-5t4hf9n84IJQ7_u1yFZLQ";
 
 
 export class TicTacToeBoard extends React.Component {
@@ -33,15 +33,17 @@ export class TicTacToeBoard extends React.Component {
         })
     }
 
-    async getNotifServiceWorker() {
+    /*async getNotifServiceWorker() {
         if (!('Notification' in window)) return;
         if (Notification.permission === "granted") {
             const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.subscribe({
+            let subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
             });
-				           console.log('send Sub')
+            console.log('Salut');
+            subscription.nameJoueur = `${this.props.G.getRandomName}_player${this.props.ctx.currentPlayer}`;
+            console.log(JSON.stringify(subscription));
             await fetch('https://server.lamft-dev.tk/subscription', {
                 method: 'POST',
                 body: JSON.stringify(subscription),
@@ -50,28 +52,42 @@ export class TicTacToeBoard extends React.Component {
                 },
             });
         }
+    }*/
+    
+    async registration() {
+        if (Notification.permission === "granted") {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
+            });
+            const nameJoueur = `${this.props.G.nameLobby}_player${this.props.playerID}`;
+            
+            const body = {
+                subscription:subscription,
+                name:nameJoueur
+            }
+            
+            await fetch('https://server.lamft-dev.tk/subscription', {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
+        }
     }
 
-    getNotification(self) {
+    getNotification() {
         if (('Notification' in window)) {
-            Notification.requestPermission().then(async (permission) => {
-                if (permission === "granted") {
-                    const registration = await navigator.serviceWorker.ready;
-                    const subscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: self.urlBase64ToUint8Array(publicVKey),
-                    });
-                                   console.log('send Sub')
-                    await fetch('https://server.lamft-dev.tk/subscription', {
-                        method: 'POST',
-                        body: JSON.stringify(subscription),
-                        headers: {
-                            'content-type': 'application/json',
-                        },
-                    });
-                }
-            });
-            //this.getNotifServiceWorker();
+            if (Notification.permission !== 'denied' && Notification.permission !== 'granted') {
+                Notification.requestPermission().then(async (permission) => {
+                    this.registration();
+                });
+            }
+            else {
+                this.registration();
+            }
         }
     }
 
@@ -95,7 +111,10 @@ export class TicTacToeBoard extends React.Component {
 
     render() {
         let winner = '';
-        let currentPlayer = this.props.ctx.currentPlayer;
+        console.log( this.props.ctx);
+        console.log( this.props.G);
+        console.log( this.props);
+        let currentPlayer = this.props.playerID;
         if (this.props.ctx.gameover) {
             console.log('gameover', this.props.ctx.gameover)
             winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>
@@ -150,7 +169,7 @@ export class TicTacToeBoard extends React.Component {
 
                             if (Notification.permission === "granted") {
                                 //Afficher notification
-                                this.showNotification()
+                                //this.showNotification()
                             }
 
 
@@ -170,10 +189,7 @@ export class TicTacToeBoard extends React.Component {
             tbody.push(<tr key={i}>{cells}</tr>);
         }
 
-        let buttonNotif;
-        if (Notification.permission !== 'denied' && Notification.permission !== 'granted') {
-            buttonNotif = <Button variant="info" onClick={() => {this.getNotification(this)}}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications</Button>;
-        }
+        let buttonNotif = <Button variant="info" onClick={() => {this.getNotification()}}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications de cette partie</Button>;
 
 
 

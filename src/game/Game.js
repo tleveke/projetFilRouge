@@ -3,6 +3,8 @@ import { configGame } from "./config"
 import { Cell } from './Cell';
 import data from '../assets/js/map.json';
 import { Player } from './Player'
+const fetch = require("node-fetch");
+
 
 let layerMap = {};
 data.layers.forEach((layer) => {
@@ -13,6 +15,16 @@ data.layers.forEach((layer) => {
 const blockTypeCells = [1, 21, 23, 44, 67, 86, 88, 107, 152]
 
 
+function sendNotification(nameLobby, playerID,titre, message) {
+    fetch(`https://server.lamft-dev.tk/sendpush/${nameLobby}_player${playerID}/${titre}/yourturn/${message}`)
+        .then(function(response) {
+            return response;
+        })
+        .then(function(myBlob) {
+            console.log(myBlob)
+        });;
+}
+
 function IsVictory(G) {
     let tabAlive = []
     G.PlayersPositions.forEach(player => {
@@ -22,15 +34,16 @@ function IsVictory(G) {
     })
     if (tabAlive.length === 1) {
         return { victory: true, player: tabAlive[0] }
-    }
-    else {
+    } else {
         return { victory: false }
     }
 }
+
 function getRndInteger() {
     let max = configGame.width * configGame.heigth
     return Math.floor(Math.random() * (max - 0)) + 0;
 }
+
 function getRandomName(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -64,8 +77,7 @@ function getMovePossible(player, G) {
             tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car1}`)
             tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car1}`)
             tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y - car1}`)
-        }
-        else if (i === 3) {
+        } else if (i === 3) {
             tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y + car2}`)
             tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car2}`)
             tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car2}`)
@@ -87,9 +99,9 @@ function getMovePossible(player, G) {
     return tabMoveCell;
 }
 
-function blockCells(tabMoveCell,player, G) { //Permet d'enlevez la possibilité de bouger dans des cases qui est bloquer par une case bloquer
+function blockCells(tabMoveCell, player, G) { //Permet d'enlevez la possibilité de bouger dans des cases qui est bloquer par une case bloquer
 
-    tabMoveCell.forEach((movecell) => { 
+    tabMoveCell.forEach((movecell) => {
         let cell = G.cells[movecell];
 
         let cellplus1 = G.cells[movecell + 1];
@@ -115,13 +127,14 @@ function blockCells(tabMoveCell,player, G) { //Permet d'enlevez la possibilité 
 }
 
 export const TicTacToe = {
-    name:'Jeu_Fil_Rouge',
+    name: 'Jeu_Fil_Rouge',
     minPlayers: 2,
     maxPlayers: 5,
     setup: (ctx, setupData) => {
 
         let G = { cells: [] };
         G.PlayersPositions = [];
+        G.nameLobby = getRandomName(15);
 
         for (let x = 0; x < configGame.heigth; x++) {
             for (let y = 0; y < configGame.width; y++) {
@@ -150,7 +163,11 @@ export const TicTacToe = {
                 }
             }
         });
-        console.log('d')
+
+
+
+
+
         return G;
     },
 
@@ -163,7 +180,7 @@ export const TicTacToe = {
 
                 moveorAttackPlayer: (G, ctx, id) => {
 
-                    console.log(id,ctx)
+                    console.log(id, ctx)
                     let playerActual = G.PlayersPositions[ctx.currentPlayer];
                     try {
                         for (let i = 0; i < G.cells.length; i++) {
@@ -178,11 +195,10 @@ export const TicTacToe = {
 
                         //ctx.events.setPhase('attackPlayer');
 
-                    }
-                    catch {
+                    } catch {
                         console.log('pas possible')
                     }
-                    
+
                 },
 
 
@@ -192,8 +208,7 @@ export const TicTacToe = {
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
                         console.log(playercurrent);
                         G.cells[id].player.setLife(opponent.life - playercurrent.power);
-                    }
-                    catch {
+                    } catch {
                         console.log('pas possible')
                     }
                 },
@@ -202,11 +217,13 @@ export const TicTacToe = {
                 moveLimit: 1,
                 order: TurnOrder.DEFAULT,
                 onBegin: (G, ctx) => { // Tout f'abord, vérification si le joueur est mort ou pas. Si non, obtiens les cases possibles pour le déplacement
+
+
+                    sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour', "C'est le moment de jouer, IKE !!!!!!");
                     let player = G.PlayersPositions[ctx.currentPlayer]
                     if (player.etat === 'dead') {
                         ctx.events.pass();
-                    }
-                    else {
+                    } else {
 
 
                         let tabMoveCell = getMovePossible(player, G);
@@ -214,16 +231,14 @@ export const TicTacToe = {
                         tabMoveCell.forEach((movecell) => {
                             if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'vide' && !blockTypeCells.includes(layerMap.data[movecell])) {
                                 G.cells[movecell].setMoveCell();
-                            }
-                            else if (blockTypeCells.includes(layerMap.data[movecell])) {
+                            } else if (blockTypeCells.includes(layerMap.data[movecell])) {
                                 G.cells[movecell].setBlockCell();
-                            }
-                            else if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'player') {
+                            } else if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'player') {
                                 G.cells[movecell].player.setEtat('threatfull');
                             }
                         });
 
-                        blockCells(tabMoveCell,player,G)
+                        blockCells(tabMoveCell, player, G)
 
 
                     }
@@ -252,7 +267,7 @@ export const TicTacToe = {
             start: true,
         },
 
-        attackPlayer: {//Phase qui permet de attaquer une personne => passe le tour
+        attackPlayer: { //Phase qui permet de attaquer une personne => passe le tour
             turn: {
                 moveLimit: 1,
                 order: TurnOrder.DEFAULT,
@@ -263,8 +278,7 @@ export const TicTacToe = {
                         }
                     })
                 },
-                onEnd: (G, ctx) => {
-                },
+                onEnd: (G, ctx) => {},
             },
             moves: {},
         }
@@ -276,6 +290,7 @@ export const TicTacToe = {
         let victory = IsVictory(G);
         if (victory.victory) {
             //console.log('Le vainqueur est :',victory.player)
+            sendNotification(G.nameLobby, victory.player, 'Victoire !', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
             return { winner: victory.player };
         }
     },

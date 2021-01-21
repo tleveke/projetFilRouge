@@ -12,6 +12,7 @@ export class Player {
     constructor(cPosition, cName,cClassCss) {
         this.position = cPosition;
         this.name = cName;
+        this.numero = cClassCss;
         this.life = configGame.lifeDefault;
         this.power = configGame.powerDefault;
         this.speed = configGame.speedDefault;
