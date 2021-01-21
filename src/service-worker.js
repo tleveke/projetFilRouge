@@ -148,7 +148,7 @@ registerRoute(
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("install", (event) => {
-  event.waitUntil(cacheFiles())
+  event.waitUntil("Service Worker installed")
 });
 
 self.addEventListener('message', (event) => {

@@ -20,7 +20,7 @@ function IsVictory(G) {
             tabAlive.push(player);
         }
     })
-    if (tabAlive.length == 1) {
+    if (tabAlive.length === 1) {
         return { victory: true, player: tabAlive[0] }
     }
     else {
@@ -97,17 +97,17 @@ function blockCells(tabMoveCell,player, G) { //Permet d'enlevez la possibilité 
         let cellplus10 = G.cells[movecell + 10];
         let cellmoins10 = G.cells[movecell - 10];
 
-        if (cell.type == 'block') {
-            if (cellmoins10 != undefined && cellmoins10.type == 'move' && player.position == movecell + 10) {
+        if (cell.type === 'block') {
+            if (cellmoins10 !== undefined && cellmoins10.type === 'move' && player.position === movecell + 10) {
                 G.cells[movecell - 10].setBlockCell();
             }
-            if (cellplus10 != undefined && cellplus10.type == 'move' && player.position == movecell - 10) {
+            if (cellplus10 !== undefined && cellplus10.type === 'move' && player.position === movecell - 10) {
                 G.cells[movecell + 10].setBlockCell();
             }
-            if (cellmoins1 != undefined && cellmoins1.type == 'move' && player.position == movecell + 1) {
+            if (cellmoins1 !== undefined && cellmoins1.type === 'move' && player.position === movecell + 1) {
                 G.cells[movecell - 1].setBlockCell();
             }
-            if (cellplus1 != undefined && cellplus1.type == 'move' && player.position == movecell - 1) {
+            if (cellplus1 !== undefined && cellplus1.type === 'move' && player.position === movecell - 1) {
                 G.cells[movecell + 1].setBlockCell();
             }
         }
@@ -236,8 +236,13 @@ export const TicTacToe = {
                         }
                         if (cell.type === 'player') {
                             cell.player.setThreathless();
+<<<<<<< HEAD
                             if (cell.player.life == 0) {
                                 G.PlayersPositions.forEach((player) => {
+=======
+                            if (cell.player.life === 0) {
+                                PlayersPositions.forEach((player) => {
+>>>>>>> main
                                     if (cell.player.classCss === player.classCss) {
                                         cell.setVideCell()
                                         G.PlayersPositions[G.PlayersPositions.indexOf(player)].setDeadPlayer();
@@ -258,7 +263,7 @@ export const TicTacToe = {
                 order: TurnOrder.DEFAULT,
                 onBegin: (G, ctx) => {
                     G.cells.forEach((cell) => {
-                        if (cell.type != 'player') {
+                        if (cell.type !== 'player') {
                             cell.setVideCell();
                         }
                     })

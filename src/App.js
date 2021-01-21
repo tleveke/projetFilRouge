@@ -2,7 +2,9 @@ import React from "react";
 import Home from "./vues/Home";
 import NewLobbyComponent from './vues/NewLobbyComponent';
 import JoinLobbyComponent from './vues/JoinLobbyComponent';
-import {
+import GameFilRouge from './game/index'
+import Multiplayer from './game/multiplayer'
+import { 
   Nav,
   Navbar,
 } from 'react-bootstrap';
@@ -12,8 +14,7 @@ import {
   Route
 } from "react-router-dom";
 
-import GameFilRouge from './game/index'
-import Multiplayer from './game/multiplayer'
+
 
 export default function App() {
   return (

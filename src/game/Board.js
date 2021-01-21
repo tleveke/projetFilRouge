@@ -1,11 +1,14 @@
 import React from 'react';
 import { configGame } from './config';
 import './BoardStyle.css';
+<<<<<<< HEAD
 //import '../../public/js/map';
 import data from '../assets/js/map.json';
 import { Button } from 'react-bootstrap';
 
 const publicVKey = "BERS0qIV52YrS3vpWLTtx8t3a3LrXfqrazefmqy5o_TuQ6ZC2TDkWmQb1ZmUeeVxRmQjeGsi0Aah-sod4PKP5M4";
+=======
+>>>>>>> main
 
 
 export class TicTacToeBoard extends React.Component {
@@ -65,7 +68,7 @@ export class TicTacToeBoard extends React.Component {
     onClick(id) {
         let cell = this.props.G.cells[id];
         document.getElementById('error').innerHTML = '';
-        if (cell.type === 'player' && cell.player.etat == 'threatfull') {
+        if (cell.type === 'player' && cell.player.etat === 'threatfull') {
             this.props.moves.attackPlayer(id)
         }
         else if (cell.type === 'move') {
@@ -111,20 +114,20 @@ export class TicTacToeBoard extends React.Component {
                     var cell = this.props.G.cells[id];
 
                     element.classList.remove(...element.classList)
-                    if (cell.type == 'move') {
+                    if (cell.type === 'move') {
                         element.classList.add('movePossible')
                     }
-                    else if (cell.type == 'player') {
+                    else if (cell.type === 'player') {
 
                         element.classList.add('player', cell.player.classCss)
-                        if (`threatfull` == cell.player.etat) {
+                        if (`threatfull` === cell.player.etat) {
                             element.classList.add('opponent');
                         }
                         if (cell.player.life === 0) {
                             element.classList.add('dead');
                         }
 
-                        if (cell.player.classCss == `player${currentPlayer}`) {
+                        if (cell.player.classCss === `player${currentPlayer}`) {
                             document.getElementById('heart').innerHTML = "";
                             for (let i = 0; i < cell.player.life; i++) {
                                 var img = document.createElement('img');
@@ -141,10 +144,10 @@ export class TicTacToeBoard extends React.Component {
                         }
 
                     }
-                    else if (cell.type == 'block') {
+                    else if (cell.type === 'block') {
                         element.classList.add('moveImpossible')
                     }
-                    else if (cell.type == 'opponent') {
+                    else if (cell.type === 'opponent') {
                         element.classList.add('opponent')
                     }
                     element.classList.add('cell', 'cell' + id)
