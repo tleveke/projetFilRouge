@@ -1,19 +1,19 @@
 .movePossible {
-    background: rgba(0, 0, 255, 0.250);
+    background: rgba(0, 0, 255, 0.60);
 }
 .moveImpossible {
-    background: rgba(255, 38, 0, 0.25);
+    background: rgba(255, 38, 0, 0.60);
 }
 .opponent {
-    background: rgba(135, 29, 143, 0.549);
+    background: rgba(135, 29, 143, 0.70);
 }
 .items {
-    background: rgba(255, 255, 0, 0.250);
+    background: rgba(255, 255, 0, 0.60);
 }
 
 .map {
-    width: 320px;
-    height: 320px;
+    width: 823px;
+    height: 823px;
     background-image: url('../assets/img/map.png');
     background-repeat: no-repeat;
 }
@@ -43,8 +43,8 @@
 
 .cell {
     border: 1px solid rgba(85, 85, 85, 0.396);
-    width: 26px !important;
-    height: 26px !important;
+    width: 32px !important;
+    height: 32px !important;
     text-align: center;
 }
 
@@ -52,6 +52,67 @@
 
 
 
+/**  Object_Image **/
 
+.armor_boots {
+    background-image: url('../assets/img/object/armor_boots.png');
+    background-size: 100%;
+}
+.armor_chainmail {
+    background-image: url('../assets/img/object/armor_chainmail.png');
+    background-size: 100%;
+}
+.armor_steel {
+    background-image: url('../assets/img/object/armor_steel.png');
+    background-size: 100%;
+}
+.weapon_golden_sword {
+    background-image: url('../assets/img/object/weapon_golden_sword.png');
+    background-repeat: no-repeat;
+    background-size: 40%;
+    background-position: center;
+}
+.weapon_knife {
+    background-image: url('../assets/img/object/weapon_knife.png');
+    background-repeat: no-repeat;
+    background-size: 40%;
+    background-position: center;
+}
+.weapon_red_magic_staff {
+    background-image: url('../assets/img/object/weapon_red_magic_staff.png');
+    background-repeat: no-repeat;
+    background-size: 40%;
+    background-position: center;
+}
+.weapon_regular_sword {
+    background-image: url('../assets/img/object/weapon_regular_sword.png');
+    background-repeat: no-repeat;
+    background-size: 40%;
+    background-position: center;
+}
+.life_1heart {
+    background-image: url('../assets/img/object/life_1heart.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.life_2heart {
+    background-image: url('../assets/img/object/life_2heart.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.life_3heart {
+    background-image: url('../assets/img/object/life_3heart.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.life_5heart {
+    background-image: url('../assets/img/object/life_5heart.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 /*Button notifications*/

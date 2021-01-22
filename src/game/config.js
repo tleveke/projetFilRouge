@@ -1,5 +1,5 @@
-let width = 10;
-let height = 10;
+let width = 25;
+let height = 25;
 
 export const configGame = {
     width: width,

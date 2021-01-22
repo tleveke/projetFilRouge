@@ -9,6 +9,9 @@ export class Player {
     classCss = null;
     numero = null;
     etat = null;
+    
+    weapon = null;
+    armor = null;
 
     constructor(cPosition, cName,cClassCss) {
         this.position = cPosition;
@@ -56,6 +59,44 @@ export class Player {
         this.speed = object.speed;
         this.classCss = object.classCss;
         this.etat = object.etat
+    }
+    
+    
+    /* Gain methods */
+    
+    gainWeapon(weapon) {
+        console.log("J'ai obtenu un arme", weapon)
+        this.weapon = weapon;
+    }
+    gainArmor(armor) {
+        console.log("J'ai obtenu une armure", armor)
+        this.armor = armor;
+    }
+    gainLife(life) {
+        console.log("J'ai obtenu de la vie", life)
+        this.life = this.life + life.vie;
+    }
+    
+    looseWeaponDurability() {
+        if (this.weapon.looseDurability() === 0) {
+            this.weapon = null;
+        }
+    }
+    
+    loosePV(powerOfPlayer) {
+        let looselife = 0
+        if (this.armor != null) {
+            
+            this.armor.armor = this.armor.armor - powerOfPlayer
+            if (this.armor.armor <= 0) {
+                looselife = this.armor.armor * -1;
+                this.armor = null
+            }
+        }
+        else {
+            looselife = powerOfPlayer;
+        }
+        this.life -= looselife;
     }
 
 }

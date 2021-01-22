@@ -32,27 +32,6 @@ export class TicTacToeBoard extends React.Component {
             window.open('/game', "_blank")
         })
     }
-
-    /*async getNotifServiceWorker() {
-        if (!('Notification' in window)) return;
-        if (Notification.permission === "granted") {
-            const registration = await navigator.serviceWorker.ready;
-            let subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
-            });
-            console.log('Salut');
-            subscription.nameJoueur = `${this.props.G.getRandomName}_player${this.props.ctx.currentPlayer}`;
-            console.log(JSON.stringify(subscription));
-            await fetch('https://server.lamft-dev.tk/subscription', {
-                method: 'POST',
-                body: JSON.stringify(subscription),
-                headers: {
-                    'content-type': 'application/json',
-                },
-            });
-        }
-    }*/
     
     async registration() {
         if (Notification.permission === "granted") {
@@ -104,6 +83,9 @@ export class TicTacToeBoard extends React.Component {
         else if (cell.type === 'move') {
             this.props.moves.moveorAttackPlayer(id);
         }
+        else if (cell.type === 'object' && cell.object.etat === 'get') {
+            this.props.moves.getObject(id);
+        }
         else {
             document.getElementById('error').innerHTML = 'Vous pouvez pas cliquez !'
         }
@@ -114,7 +96,8 @@ export class TicTacToeBoard extends React.Component {
         console.log( this.props.ctx);
         console.log( this.props.G);
         console.log( this.props);
-        let currentPlayer = this.props.playerID;
+        let currentPlayer = this.props.playerID; //Multijoeuur
+        //let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
         if (this.props.ctx.gameover) {
             console.log('gameover', this.props.ctx.gameover)
             winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>
@@ -155,18 +138,40 @@ export class TicTacToeBoard extends React.Component {
                         if (`threatfull` === cell.player.etat) {
                             element.classList.add('opponent');
                         }
-                        if (cell.player.life === 0) {
+                        if (cell.player.life <= 0) {
                             element.classList.add('dead');
                         }
 
                         if (cell.player.classCss === `player${currentPlayer}`) {
                             document.getElementById('heart').innerHTML = "";
+                            document.getElementById('armor').innerHTML = "";
                             for (let i = 0; i < cell.player.life; i++) {
                                 var img = document.createElement('img');
                                 img.src = '/img/heart.gif';
                                 document.getElementById('heart').appendChild(img);
                             }
-
+                            
+                                document.getElementById('dashboard').innerHTML = `<p>Vous avez de puissance ${cell.player.power} et votre capacité de déplacement est ${cell.player.speed}`;
+                                
+                                
+                                document.getElementById('dashboard_weapon').innerHTML = ``;
+                                document.getElementById('dashboard_armor').innerHTML = ``;
+                                
+                                if (cell.player.weapon) {
+                                    let weapon = cell.player.weapon;
+                                    document.getElementById('dashboard_weapon').innerHTML = `<p>Vous une arme ${weapon.name}, de puissance ${weapon.power}, avec une vitesse supplémentaire ou inférieure de ${weapon.speed}`;
+                                }
+                                if (cell.player.armor) {
+                                    let armor = cell.player.armor;
+                                    document.getElementById('dashboard_armor').innerHTML = `<p>Vous une arme ${armor.name}, de capacité de résistance au dégâts de ${armor.armor}, avec une vitesse supplémentaire ou inférieure de ${armor.speed}`;
+                                    
+                                    for (let y = 0; y < armor.armor; y++) {
+                                        var img = document.createElement('img');
+                                        img.src = '/img/armor.png';
+                                        document.getElementById('armor').appendChild(img);
+                                    }
+                                    
+                                }                            
                             if (Notification.permission === "granted") {
                                 //Afficher notification
                                 //this.showNotification()
@@ -178,6 +183,21 @@ export class TicTacToeBoard extends React.Component {
                     }
                     else if (cell.type === 'block') {
                         element.classList.add('moveImpossible')
+                    }
+                    else if (cell.type === 'object') {
+                        if (cell.object.etat === 'get') {
+                            element.classList.add('items')
+                        }
+                        if (cell.object.image !== '') {
+                            element.classList.add(cell.object.image);
+                        }
+                        else {
+                            
+                            console.log(cell,'cell');
+                            console.log(cell,'cell');
+                            console.log(cell,'cell');
+                            console.log(cell,'cell');
+                        }
                     }
                     else if (cell.type === 'opponent') {
                         element.classList.add('opponent')
@@ -200,13 +220,21 @@ export class TicTacToeBoard extends React.Component {
 
         return (
             <div>
+            <div>
                 <table className="map" id="board">
                     <tbody>{tbody}</tbody>
                 </table>
                 <p id='error'></p>
-                <div id="heart" className="heart"></div>
+                <div id="dashboard"></div>
+                <div id="dashboard_weapon"></div>
+                <div id="dashboard_armor"></div>
+                <div>
+                  <span id="heart" className="heart"></span>
+                  <span id="armor" className="armor"></span>
+                </div>
                 {winner}
                 {buttonNotif}
+            </div>
             </div>
         );
     }

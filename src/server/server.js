@@ -97,4 +97,24 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
     await next();
 });
 
+router.get('/endGame/:nameLobby', bodyParser, async (ctx, next) => {
+    const nameLobby = ctx.params.nameLobby;
+    
+    const client = new MongoClient(uri);
+    try {
+        // Connect to the MongoDB cluster
+        await client.connect();
+
+        const players = await client.db("gameFilRouge").collection("subscription").find({name:{'$regex': nameLobby} }).toArray();
+        console.log(players)
+        //await client.db("gameFilRouge").collection("subscription").deleteMany({name:{'$regex': nameLobby} });
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    await next();
+});
+
+
 server.run(configGame.serverPort);

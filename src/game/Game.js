@@ -1,27 +1,102 @@
 import { INVALID_MOVE, TurnOrder } from "boardgame.io/core";
 import { configGame } from "./config"
 import { Cell } from './Cell';
+import { Weapon, Armor, Life, Other } from './Object';
 import data from '../assets/js/map.json';
 import { Player } from './Player'
 const fetch = require("node-fetch");
 
 
+
 let layerMap = {};
 data.layers.forEach((layer) => {
-    if (layer.id === 1) {
+    if (layer.name === "Calque de Tuiles 2") {
         layerMap = layer
     }
 })
-const blockTypeCells = [1, 21, 23, 44, 67, 86, 88, 107, 152]
+const blockTypeCells = [0, 1, 71, 72, 711, 854, 782, 781, 853, 860, 1214, 1223, 1224, 1153, 1152, 1074, 1145, 1068].map(x => x + 1325);
 
 
-function sendNotification(nameLobby, playerID,titre,tag, message) {
+
+
+function getObject(G) {
+    let proba = Math.floor(Math.random() * (100 - 0 + 1)) + 0;
+
+    let tabAlive = []
+    G.PlayersPositions.forEach(player => {
+        if (player.etat !== 'dead') {
+            tabAlive.push(player);
+        }
+    })
+
+
+
+    console.log(proba, 'proba',100 - 100 / tabAlive.length);
+
+    if (proba >= 100 - 100 / tabAlive.length) {
+        //Création d'un objet
+
+        let probaTable = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+        let probaItem = Math.floor(Math.random() * (2 - 0 + 1)) + 0;
+        let object = null
+        if (probaTable === 1) {
+            object = G.weapons[probaItem];
+        }
+        if (probaTable === 2) {
+            object = G.armors[probaItem];
+        }
+        if (probaTable === 3) {
+            object = G.lifes[probaItem];
+        }
+        //object = G.armors[0];
+
+        console.log(object, 'object');
+        
+        let siPositionIncorrect = true;
+        while (siPositionIncorrect) {
+
+            let objectPosition = getRandomPosition();
+
+            if (!G.PlayersPositions.includes(objectPosition) && !blockTypeCells.includes(layerMap.data[objectPosition])) {
+                siPositionIncorrect = false;
+
+                G.cells[objectPosition].setObjectCell(object);
+            }
+        }
+        console.log(G.cells) 
+        return G.cells;
+
+
+
+    }
+
+}
+
+function generateObject(G) {
+    G.weapons = [new Weapon('Epée', 2, 0, 'weapon_knight_sword'), new Weapon('Epée longue', 4, -1, 'weapon_golden_sword'), new Weapon('Dague', 1, 1, 'weapon_knife'), new Weapon('Spectre de Mage', 1, 1, 'weapon_red_magic_staff')];
+    G.armors = [new Armor('Bottes', 0, 1, 'armor_boots'), new Armor('Cotes de mailles', 1, 0, 'armor_chainmail'), new Armor('Armure en Acier', 3, -1, 'armor_steel'), new Armor('Armure en Beskar', 6, 0, '')];
+    G.lifes = [new Life('Un coeur', 1, 'life_1heart'), new Life('Deux Coeurs', 2, 'life_2heart'), new Life('Trois Coeurs', 3, 'life_3heart'), new Life('5 coeurs', 5, 'life_5heart')];
+    G.others = [new Other('Barque', ''), new Other('Bombes', '')];
+    return G;
+}
+
+function sendNotification(nameLobby, playerID, titre, tag, message) {
     fetch(`https://server.lamft-dev.tk/sendpush/${nameLobby}_player${playerID}/${titre}/${tag}/${message}`)
         .then(function(response) {
             return response;
         })
-        .then(function(myBlob) {
-            console.log(myBlob)
+        .then(function(response) {
+            console.log(response)
+        });
+}
+
+function finishGame(G) {
+    fetch(`https://server.lamft-dev.tk/endGame/${G.nameLobby}`)
+        .then(function(response) {
+            return response;
+        })
+        .then(function(response) {
+            console.log(response)
         });;
 }
 
@@ -39,7 +114,7 @@ function IsVictory(G) {
     }
 }
 
-function getRndInteger() {
+function getRandomPosition() {
     let max = configGame.width * configGame.heigth
     return Math.floor(Math.random() * (max - 0)) + 0;
 }
@@ -56,8 +131,23 @@ function getRandomName(length) {
 
 function getMovePossible(player, G) {
     const currentPosition = player.position;
-    const speed = player.speed;
-    const tailleGrid = configGame.maxCases;
+    
+    
+    let speed = player.speed;
+    
+    if( player.armor !== null) {
+        speed = speed + player.armor.speed;
+    }
+    if( player.weapon !== null) {
+        speed = speed + player.weapon.speed;
+    }
+    if (speed < 1) {
+        speed = 1;
+    }
+    
+    
+    
+    const tailleGrid = configGame.width;
 
     const cellcurrent = G.cells[currentPosition];
     const tabMoveCellStr = [];
@@ -68,33 +158,34 @@ function getMovePossible(player, G) {
 
     for (let i = 1; i <= speed; i++) {
 
-        tabMoveCellStr.push(`${cellcurrent.x}${cellcurrent.y - i}`)
-        tabMoveCellStr.push(`${cellcurrent.x}${cellcurrent.y + i}`)
-        tabMoveCellStr.push(`${cellcurrent.x - i}${cellcurrent.y}`)
-        tabMoveCellStr.push(`${cellcurrent.x + i}${cellcurrent.y}`)
+        tabMoveCellStr.push(`${cellcurrent.x * tailleGrid + cellcurrent.y - i}`)
+        tabMoveCellStr.push(`${cellcurrent.x * tailleGrid + cellcurrent.y + i}`)
+        tabMoveCellStr.push(`${(cellcurrent.x -i) * tailleGrid + cellcurrent.y}`)
+        tabMoveCellStr.push(`${(cellcurrent.x +i) * tailleGrid + cellcurrent.y}`)
         if (i === 2) {
-            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y + car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${(cellcurrent.x- car1) * tailleGrid + cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${(cellcurrent.x+ car1) * tailleGrid + cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${(cellcurrent.x+ car1) * tailleGrid + cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${(cellcurrent.x- car1) * tailleGrid + cellcurrent.y - car1}`)
         } else if (i === 3) {
-            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y + car2}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y - car2}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car1}${cellcurrent.y + car2}`)
-            tabMoveCellStr.push(`${cellcurrent.x - car1}${cellcurrent.y - car2}`)
+            tabMoveCellStr.push(`${( cellcurrent.x - car1) * tailleGrid + cellcurrent.y + car2}`)
+            tabMoveCellStr.push(`${( cellcurrent.x + car1) * tailleGrid + cellcurrent.y - car2}`)
+            tabMoveCellStr.push(`${( cellcurrent.x + car1) * tailleGrid + cellcurrent.y + car2}`)
+            tabMoveCellStr.push(`${( cellcurrent.x - car1) * tailleGrid + cellcurrent.y - car2}`)
 
-            tabMoveCellStr.push(`${cellcurrent.x - car2}${cellcurrent.y + car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car2}${cellcurrent.y - car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x + car2}${cellcurrent.y + car1}`)
-            tabMoveCellStr.push(`${cellcurrent.x - car2}${cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${( cellcurrent.x - car2) * tailleGrid + cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${( cellcurrent.x + car2) * tailleGrid + cellcurrent.y - car1}`)
+            tabMoveCellStr.push(`${( cellcurrent.x + car2) * tailleGrid + cellcurrent.y + car1}`)
+            tabMoveCellStr.push(`${( cellcurrent.x - car2) * tailleGrid + cellcurrent.y - car1}`)
         }
     }
     tabMoveCellStr.forEach(cell => {
         let cellInt = parseInt(cell);
-        if (cellInt >= 0 && cellInt < 100 && !cell.includes('-')) {
+        if (cellInt >= 0 && cellInt < configGame.maxCases && !cell.includes('-')) {
             tabMoveCell.push(cellInt)
         }
     })
+
 
     return tabMoveCell;
 }
@@ -149,7 +240,7 @@ export const TicTacToe = {
             let siPositionIncorrect = true;
             while (siPositionIncorrect) {
 
-                let playerDefaultPosition = getRndInteger();
+                let playerDefaultPosition = getRandomPosition();
 
                 if (!G.PlayersPositions.includes(playerDefaultPosition) && !blockTypeCells.includes(layerMap.data[playerDefaultPosition])) {
                     siPositionIncorrect = false;
@@ -165,7 +256,7 @@ export const TicTacToe = {
         });
 
 
-
+        G = generateObject(G);
 
 
         return G;
@@ -174,7 +265,6 @@ export const TicTacToe = {
 
 
     phases: {
-
         movePlayer: { //Phase qui permet de bouger de case, ce lance en premier. Permet eventuellement de attaquer mais passe le tour
             moves: {
 
@@ -206,9 +296,52 @@ export const TicTacToe = {
                     try {
                         let opponent = G.cells[id].player;
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
+                        
+                        let powerofPCurrent = playercurrent.power;
+                        if (playercurrent.weapon != null) {
+                            powerofPCurrent += playercurrent.weapon.power;
+                            playercurrent.looseWeaponDurability();
+                        }
+                        
                         console.log(playercurrent);
-                        sendNotification(G.nameLobby, opponent.numero, 'Perte de PV','losePV', "Vous avez perdu un coeur.");
-                        G.cells[id].player.setLife(opponent.life - playercurrent.power);
+                        sendNotification(G.nameLobby, opponent.numero, 'Perte de PV', 'losePV', "Vous avez perdu un coeur.");
+                        G.cells[id].player.loosePV(powerofPCurrent);
+                        if (G.cells[id].player.life <= 0) {
+                            sendNotification(G.nameLobby, G.cells[id].player.numero, 'Défaite', 'loser', "Vous avez perdu cette partie, vous êtes mort.");
+                        }
+                    } catch {
+                        console.log('pas possible')
+                    }
+                },
+                
+                getObject: (G, ctx, id) => {
+                    try {
+                        let object = G.cells[id].object;
+                        let playercurrent = G.PlayersPositions[ctx.currentPlayer];
+                        console.log('Je recupere',object);
+                        if (object.power !== undefined) {
+                            playercurrent.gainWeapon(object)
+                        }
+                        else if (object.armor !== undefined) {
+                            playercurrent.gainArmor(object)
+                        }
+                        else if (object.vie !== undefined) {
+                            console.log('Je recupere de la vie',object);
+                            playercurrent.gainLife(object)
+                        }
+                        
+                        
+                        for (let i = 0; i < G.cells.length; i++) {
+
+                            if (G.cells[i].player === playercurrent) {
+                                G.cells[i].setVideCell()
+                            }
+                        }
+                        playercurrent.setPosition(id)
+                        G.cells[id].setPlayer(playercurrent);
+                        G.PlayersPositions[ctx.currentPlayer] = playercurrent;
+                        
+                        
                     } catch {
                         console.log('pas possible')
                     }
@@ -219,13 +352,12 @@ export const TicTacToe = {
                 order: TurnOrder.DEFAULT,
                 onBegin: (G, ctx) => { // Tout f'abord, vérification si le joueur est mort ou pas. Si non, obtiens les cases possibles pour le déplacement
 
-
-                    sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour','yourturn', "C'est le moment de jouer, IKE !!!!!!");
                     let player = G.PlayersPositions[ctx.currentPlayer]
                     if (player.etat === 'dead') {
                         ctx.events.pass();
                     } else {
 
+                        sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour', 'yourturn', "C'est le moment de jouer, IKE !!!!!!");
 
                         let tabMoveCell = getMovePossible(player, G);
 
@@ -236,10 +368,16 @@ export const TicTacToe = {
                                 G.cells[movecell].setBlockCell();
                             } else if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'player') {
                                 G.cells[movecell].player.setEtat('threatfull');
+                            } else if (G.cells[movecell] !== undefined && G.cells[movecell].type === 'object') {
+                                G.cells[movecell].object.setEtat('get');
                             }
                         });
 
                         blockCells(tabMoveCell, player, G)
+                        
+                        
+                        G = getObject(G);
+
 
 
                     }
@@ -252,15 +390,17 @@ export const TicTacToe = {
                         }
                         if (cell.type === 'player') {
                             cell.player.setThreathless();
-                            if (cell.player.life === 0) {
+                            if (cell.player.life <= 0) {
                                 G.PlayersPositions.forEach((player) => {
                                     if (cell.player.classCss === player.classCss) {
                                         cell.setVideCell()
                                         G.PlayersPositions[G.PlayersPositions.indexOf(player)].setDeadPlayer();
-                                        sendNotification(G.nameLobby, G.PlayersPositions[G.PlayersPositions.indexOf(player)].numero, 'Défaite','loser', "Vous avez perdu cette partie, vous êtes mort.");
                                     }
                                 })
                             }
+                        }
+                        if(cell.type === 'object') {
+                            cell.object.removeEtat();
                         }
                         return cell
                     })
@@ -292,7 +432,10 @@ export const TicTacToe = {
         let victory = IsVictory(G);
         if (victory.victory) {
             //console.log('Le vainqueur est :',victory.player)
-            sendNotification(G.nameLobby, victory.player.numero, 'Victoire !','victory', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
+            sendNotification(G.nameLobby, victory.player.numero, 'Victoire !', 'victory', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
+
+            finishGame(G);
+
             return { winner: victory.player };
         }
     },
