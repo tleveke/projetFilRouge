@@ -5,7 +5,7 @@ export const configGame = {
     width: width,
     heigth: height,
     maxCases: width * height,
-    lifeDefault : 3,
+    lifeDefault : 5,
     powerDefault : 1,
     speedDefault : 2,
     serverPort : 12538,

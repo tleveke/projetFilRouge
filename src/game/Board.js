@@ -3,7 +3,7 @@ import { configGame } from './config';
 import './BoardStyle.css';
 //import '../../public/js/map';
 import data from '../assets/js/map.json';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Row, Col, Table, ResponsiveEmbed } from 'react-bootstrap';
 
 const publicVKey = "BItfWGr9-A8X6Jaoy6AHkRyrs4UPEg1Om2cu8iOeaihiF0zVVNbJsYPOViovgSXYP-5t4hf9n84IJQ7_u1yFZLQ";
 
@@ -32,7 +32,42 @@ export class TicTacToeBoard extends React.Component {
             window.open('/game', "_blank")
         })
     }
-    
+
+
+    setWeaponInfo(docu,player) {
+        for (let i = 0; i < player.power; i++) {
+            let img = document.createElement('img');
+            img.classList.add('powerImg')
+            img.src = '/img/power.png';
+            docu.appendChild(img);
+        }
+        if (player.weapon) {
+            let power = player.weapon.power;
+
+            for (let y = 0; y < power; y++) {
+                let img = document.createElement('img');
+                img.classList.add('powerImg')
+                img.src = '/img/power.png';
+                docu.appendChild(img);
+            }
+
+        }
+        return docu;
+    }
+    setArmorInfo(docu,player) {
+        if (player.armor) {
+            let armor = player.armor;
+
+            for (let y = 0; y < armor.armor; y++) {
+                let img = document.createElement('img');
+                img.src = '/img/armor.png';
+                docu.appendChild(img);
+            }
+
+        }
+        return docu;
+    }
+
     async registration() {
         if (Notification.permission === "granted") {
             const registration = await navigator.serviceWorker.ready;
@@ -41,12 +76,12 @@ export class TicTacToeBoard extends React.Component {
                 applicationServerKey: this.urlBase64ToUint8Array(publicVKey),
             });
             const nameJoueur = `${this.props.G.nameLobby}_player${this.props.playerID}`;
-            
+
             const body = {
-                subscription:subscription,
-                name:nameJoueur
+                subscription: subscription,
+                name: nameJoueur
             }
-            
+
             await fetch('https://server.lamft-dev.tk/subscription', {
                 method: 'POST',
                 body: JSON.stringify(body),
@@ -68,6 +103,7 @@ export class TicTacToeBoard extends React.Component {
                 this.registration();
             }
         }
+        document.getElementById('buttonNotif').style.display = 'none';
     }
 
     getRndInteger(min, max) {
@@ -93,11 +129,11 @@ export class TicTacToeBoard extends React.Component {
 
     render() {
         let winner = '';
-        console.log( this.props.ctx);
-        console.log( this.props.G);
-        console.log( this.props);
-        let currentPlayer = this.props.playerID; //Multijoeuur
-        //let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
+        console.log(this.props.ctx);
+        console.log(this.props.G);
+        console.log(this.props);
+        //let currentPlayer = this.props.playerID; //Multijoeuur
+        let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
         if (this.props.ctx.gameover) {
             console.log('gameover', this.props.ctx.gameover)
             winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>
@@ -117,18 +153,22 @@ export class TicTacToeBoard extends React.Component {
                 cells.push(
                     <td id={id} key={id} onClick={() => this.onClick(id)}>
                         {this.props.G.cells[id].value/*id*/}
+                        <span id={'span' + id} ></span>
                     </td>
                 );
 
                 let element = document.getElementById(id.toString());
 
-
-
                 if (element != null) {
 
+                    let docSpan = document.getElementById(`span${id.toString()}`);
                     var cell = this.props.G.cells[id];
 
                     element.classList.remove(...element.classList)
+                    docSpan.classList.remove(...docSpan.classList);
+                    docSpan.innerHTML = '';
+
+
                     if (cell.type === 'move') {
                         element.classList.add('movePossible')
                     }
@@ -150,28 +190,17 @@ export class TicTacToeBoard extends React.Component {
                                 img.src = '/img/heart.gif';
                                 document.getElementById('heart').appendChild(img);
                             }
-                            
-                                document.getElementById('dashboard').innerHTML = `<p>Vous avez de puissance ${cell.player.power} et votre capacité de déplacement est ${cell.player.speed}`;
-                                
-                                
-                                document.getElementById('dashboard_weapon').innerHTML = ``;
-                                document.getElementById('dashboard_armor').innerHTML = ``;
-                                
-                                if (cell.player.weapon) {
-                                    let weapon = cell.player.weapon;
-                                    document.getElementById('dashboard_weapon').innerHTML = `<p>Vous une arme ${weapon.name}, de puissance ${weapon.power}, avec une vitesse supplémentaire ou inférieure de ${weapon.speed}`;
-                                }
-                                if (cell.player.armor) {
-                                    let armor = cell.player.armor;
-                                    document.getElementById('dashboard_armor').innerHTML = `<p>Vous une arme ${armor.name}, de capacité de résistance au dégâts de ${armor.armor}, avec une vitesse supplémentaire ou inférieure de ${armor.speed}`;
-                                    
-                                    for (let y = 0; y < armor.armor; y++) {
-                                        var img = document.createElement('img');
-                                        img.src = '/img/armor.png';
-                                        document.getElementById('armor').appendChild(img);
-                                    }
-                                    
-                                }                            
+
+                            document.getElementById('dashboard').innerHTML = `<p>Vous avez de puissance ${cell.player.power} et votre capacité de déplacement est ${cell.player.speed}`;
+                            document.getElementById('dashboard_weapon').innerHTML = ``;
+                            document.getElementById('dashboard_armor').innerHTML = ``;
+
+                            let player = cell.player;
+                            let dash_weapon = document.getElementById('dashboard_weapon');
+                            let dashboard_armor = document.getElementById('dashboard_armor');
+                            this.setWeaponInfo(dash_weapon,player);
+                            this.setArmorInfo(dashboard_armor,player);
+
                             if (Notification.permission === "granted") {
                                 //Afficher notification
                                 //this.showNotification()
@@ -179,6 +208,38 @@ export class TicTacToeBoard extends React.Component {
 
 
                         }
+
+                        console.log(docSpan, `span${id.toString()}`);
+
+                        let p = document.createElement('p');
+                        p.textContent = cell.player.name;
+
+
+                        let divArmor = document.createElement('div');
+                        divArmor.classList.add('armor');
+
+                        let divHeart = document.createElement('div');
+                        divHeart.classList.add('heart');
+
+                        let divPower = document.createElement('div');
+                        divPower.classList.add('power');
+
+                        for (let i = 0; i < cell.player.life; i++) {
+                            let img = document.createElement('img');
+                            img.src = '/img/heart.gif';
+                            divHeart.appendChild(img);
+                        }
+
+                        divArmor = this.setArmorInfo(divArmor,cell.player)
+                        divPower = this.setWeaponInfo(divPower,cell.player);
+
+
+                        docSpan.appendChild(p);
+                        docSpan.appendChild(divArmor);
+                        docSpan.appendChild(divHeart);
+                        docSpan.appendChild(divPower);
+
+                        docSpan.classList.add('popupUser')
 
                     }
                     else if (cell.type === 'block') {
@@ -191,13 +252,7 @@ export class TicTacToeBoard extends React.Component {
                         if (cell.object.image !== '') {
                             element.classList.add(cell.object.image);
                         }
-                        else {
-                            
-                            console.log(cell,'cell');
-                            console.log(cell,'cell');
-                            console.log(cell,'cell');
-                            console.log(cell,'cell');
-                        }
+
                     }
                     else if (cell.type === 'opponent') {
                         element.classList.add('opponent')
@@ -209,7 +264,7 @@ export class TicTacToeBoard extends React.Component {
             tbody.push(<tr key={i}>{cells}</tr>);
         }
 
-        let buttonNotif = <Button variant="info" onClick={() => {this.getNotification()}}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications de cette partie</Button>;
+        let buttonNotif = <Button id="buttonNotif" variant="info" onClick={() => { this.getNotification() }}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications de cette partie</Button>;
 
 
 
@@ -219,23 +274,29 @@ export class TicTacToeBoard extends React.Component {
 
 
         return (
-            <div>
-            <div>
-                <table className="map" id="board">
-                    <tbody>{tbody}</tbody>
-                </table>
-                <p id='error'></p>
-                <div id="dashboard"></div>
-                <div id="dashboard_weapon"></div>
-                <div id="dashboard_armor"></div>
-                <div>
-                  <span id="heart" className="heart"></span>
-                  <span id="armor" className="armor"></span>
-                </div>
-                {winner}
-                {buttonNotif}
-            </div>
-            </div>
+            <ResponsiveEmbed aspectRatio="4by3">
+                <Container fluid>
+                    <Row>
+                        <Col className="center">
+                            <Table responsive className="map" id="board">
+                                <tbody>{tbody}</tbody>
+                            </Table>
+                        </Col>
+                        <Col>
+                            <p id='error'></p>
+                            <div id="dashboard"></div>
+                            <div id="dashboard_weapon"></div>
+                            <div id="dashboard_armor"></div>
+                            <div>
+                                <div id="armor" className="armor"></div>
+                                <div id="heart" className="heart"></div>
+                            </div>
+                            {winner}
+                            {buttonNotif}
+                        </Col>
+                    </Row>
+                </Container>
+            </ResponsiveEmbed>
         );
     }
 }

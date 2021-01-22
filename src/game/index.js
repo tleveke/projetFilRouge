@@ -18,6 +18,7 @@ const GameFilRouge = Client({
     game: TicTacToe,
     board: TicTacToeBoard,
     numPlayers: 4,
+    debug:false
 })
 
 

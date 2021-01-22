@@ -1,118 +1,231 @@
 .movePossible {
-    background: rgba(0, 0, 255, 0.60);
+    background: rgba(0, 0, 255, 0.60) !important;
 }
+
 .moveImpossible {
-    background: rgba(255, 38, 0, 0.60);
+    background: rgba(255, 38, 0, 0.60) !important;
 }
+
 .opponent {
-    background: rgba(135, 29, 143, 0.70);
+    background: rgba(135, 29, 143, 0.70) !important;
 }
+
 .items {
-    background: rgba(255, 255, 0, 0.60);
+    background: rgba(255, 255, 0, 0.60) !important;
 }
 
 .map {
-    width: 823px;
-    height: 823px;
-    background-image: url('../assets/img/map.png');
-    background-repeat: no-repeat;
+    background-image: url('../assets/img/map.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
 }
+.heart {
+    text-align: start;
+}
+.armor {
+    text-align: start;
+}
+.power {
+    text-align: start;
+}
+.heart>img {
+    margin-right: 2px;
+}
+
+Col {
+    display: flex;
+}
+
 .player {
-    background-repeat: no-repeat;
-    background-position: center; 
-    background-size: 160%;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 160% !important;
 }
+
 .player0 {
-    background-image: url('../assets/img/cameleon.png');
+    background-image: url('../assets/img/cameleon.png') !important;
 }
+
 .player1 {
-    background-image: url('../assets/img/herisson.png');
-    background-size: 120%;
+    background-image: url('../assets/img/herisson.png') !important;
+    background-size: 120% !important;
 }
+
 .player2 {
-    background-image: url('../assets/img/cochon.png');
-    background-size: 100%;
+    background-image: url('../assets/img/cochon.png') !important;
+    background-size: 100% !important;
 }
+
 .player3 {
-    background-image: url('../assets/img/bat.png');
+    background-image: url('../assets/img/bat.png') !important;
 }
+
 .player4 {
-    background-image: url('../assets/img/chicken.png');
-    background-size: 100%;
+    background-image: url('../assets/img/chicken.png') !important;
+    background-size: 100% !important;
 }
 
 .cell {
-    border: 1px solid rgba(85, 85, 85, 0.396);
-    width: 32px !important;
-    height: 32px !important;
-    text-align: center;
+    border: 1px solid rgba(85, 85, 85, 0.396) !important;
+    text-align: center !important;
 }
 
 
+.center {
+    text-align: center !important;
+}
 
+
+/* Popup CSS*/
+
+.cell .popupUser {
+    visibility: hidden;
+    width: 100px;
+    background-color: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.cell:hover .popupUser {
+    visibility: visible;
+}
+.powerImg {
+    height: 32px;
+}
 
 
 /**  Object_Image **/
 
 .armor_boots {
-    background-image: url('../assets/img/object/armor_boots.png');
-    background-size: 100%;
+    background-image: url('../assets/img/object/armor_boots.png') !important;
+    background-size: 100% !important;
 }
+
 .armor_chainmail {
-    background-image: url('../assets/img/object/armor_chainmail.png');
-    background-size: 100%;
+    background-image: url('../assets/img/object/armor_chainmail.png') !important;
+    background-size: 100% !important;
 }
+
 .armor_steel {
-    background-image: url('../assets/img/object/armor_steel.png');
-    background-size: 100%;
+    background-image: url('../assets/img/object/armor_steel.png') !important;
+    background-size: 100% !important;
 }
+
 .weapon_golden_sword {
-    background-image: url('../assets/img/object/weapon_golden_sword.png');
-    background-repeat: no-repeat;
-    background-size: 40%;
-    background-position: center;
+    background-image: url('../assets/img/object/weapon_golden_sword.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: 40% !important;
+    background-position: center !important;
 }
+
 .weapon_knife {
-    background-image: url('../assets/img/object/weapon_knife.png');
-    background-repeat: no-repeat;
-    background-size: 40%;
-    background-position: center;
+    background-image: url('../assets/img/object/weapon_knife.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: 40% !important;
+    background-position: center !important;
 }
+
 .weapon_red_magic_staff {
-    background-image: url('../assets/img/object/weapon_red_magic_staff.png');
-    background-repeat: no-repeat;
-    background-size: 40%;
-    background-position: center;
+    background-image: url('../assets/img/object/weapon_red_magic_staff.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: 40% !important;
+    background-position: center !important;
 }
-.weapon_regular_sword {
-    background-image: url('../assets/img/object/weapon_regular_sword.png');
-    background-repeat: no-repeat;
-    background-size: 40%;
-    background-position: center;
+
+.weapon_knight_sword {
+    background-image: url('../assets/img/object/weapon_regular_sword.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: 40% !important;
+    background-position: center !important;
 }
+
 .life_1heart {
-    background-image: url('../assets/img/object/life_1heart.png');
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url('../assets/img/object/life_1heart.png') !important;
+    background-size: 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
 }
+
 .life_2heart {
-    background-image: url('../assets/img/object/life_2heart.png');
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url('../assets/img/object/life_2heart.png') !important;
+    background-size: 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
 }
+
 .life_3heart {
-    background-image: url('../assets/img/object/life_3heart.png');
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url('../assets/img/object/life_3heart.png') !important;
+    background-size: 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
 }
+
 .life_5heart {
-    background-image: url('../assets/img/object/life_5heart.png');
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: url('../assets/img/object/life_5heart.png') !important;
+    background-size: 100% !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
 }
 
 /*Button notifications*/
+
+@media only screen and (max-width : 1600px) {
+    .map {
+        width: 600px;
+        height: 600px;
+    }
+
+    .cell {
+        width: 23px !important;
+        height: 23px !important;
+    }
+}
+
+@media only screen and (max-width : 1200px) {
+
+    /* Styles here */
+    .map {
+        width: 500px;
+        height: 500px;
+    }
+
+    .cell {
+        width: 19px !important;
+        height: 19px !important;
+    }
+}
+
+@media only screen and (max-width : 768px) {
+
+    /* Styles here */
+    .map {
+        width: 400px;
+        height: 400px;
+    }
+
+    .cell {
+        width: 15px !important;
+        height: 15px !important;
+    }
+}
+
+@media only screen and (max-width : 360px) {
+
+    /* Styles here */
+    .map {
+        width: 100px;
+        height: 100px;
+    }
+
+    .cell {
+        width: 7px !important;
+        height: 7px !important;
+    }
+}
