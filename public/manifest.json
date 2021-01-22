@@ -20,16 +20,22 @@
   "background_color": "#111",
   "shortcuts": [
     {
-      "name": "New Chonks",
-      "short_name": "New",
-      "url": "/rejoindre-lobby",
-      "icons": [{"src": "logo192.png", "sizes": "192x192"}]
+      "name": "Crée un lobby",
+      "short_name": "create",
+      "url": "/create-lobby",
+      "icons": [{"src": "img/attack_notification.svg", "sizes": "192x192"}]
     },
     {
-      "name": "Saved Chonks",
-      "short_name": "Saved",
-      "url": "/rejoindre-lobby",
-      "icons": [{"src": "logo192.png", "sizes": "192x192"}]
+      "name": "Rejoindre un lobby",
+      "short_name": "join",
+      "url": "/join-lobby",
+      "icons": [{"src": "img/losePV.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Multiplayer",
+      "short_name": "multi",
+      "url": "/multiplayer",
+      "icons": [{"src": "img/yourturn.png", "sizes": "192x192"}]
     }
   ]
 }

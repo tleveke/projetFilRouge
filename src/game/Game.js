@@ -15,8 +15,8 @@ data.layers.forEach((layer) => {
 const blockTypeCells = [1, 21, 23, 44, 67, 86, 88, 107, 152]
 
 
-function sendNotification(nameLobby, playerID,titre, message) {
-    fetch(`https://server.lamft-dev.tk/sendpush/${nameLobby}_player${playerID}/${titre}/yourturn/${message}`)
+function sendNotification(nameLobby, playerID,titre,tag, message) {
+    fetch(`https://server.lamft-dev.tk/sendpush/${nameLobby}_player${playerID}/${titre}/${tag}/${message}`)
         .then(function(response) {
             return response;
         })
@@ -207,6 +207,7 @@ export const TicTacToe = {
                         let opponent = G.cells[id].player;
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
                         console.log(playercurrent);
+                        sendNotification(G.nameLobby, opponent.numero, 'Perte de PV','losePV', "Vous avez perdu un coeur.");
                         G.cells[id].player.setLife(opponent.life - playercurrent.power);
                     } catch {
                         console.log('pas possible')
@@ -219,7 +220,7 @@ export const TicTacToe = {
                 onBegin: (G, ctx) => { // Tout f'abord, vérification si le joueur est mort ou pas. Si non, obtiens les cases possibles pour le déplacement
 
 
-                    sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour', "C'est le moment de jouer, IKE !!!!!!");
+                    sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour','yourturn', "C'est le moment de jouer, IKE !!!!!!");
                     let player = G.PlayersPositions[ctx.currentPlayer]
                     if (player.etat === 'dead') {
                         ctx.events.pass();
@@ -256,6 +257,7 @@ export const TicTacToe = {
                                     if (cell.player.classCss === player.classCss) {
                                         cell.setVideCell()
                                         G.PlayersPositions[G.PlayersPositions.indexOf(player)].setDeadPlayer();
+                                        sendNotification(G.nameLobby, G.PlayersPositions[G.PlayersPositions.indexOf(player)].numero, 'Défaite','loser', "Vous avez perdu cette partie, vous êtes mort.");
                                     }
                                 })
                             }
@@ -290,7 +292,7 @@ export const TicTacToe = {
         let victory = IsVictory(G);
         if (victory.victory) {
             //console.log('Le vainqueur est :',victory.player)
-            sendNotification(G.nameLobby, victory.player, 'Victoire !', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
+            sendNotification(G.nameLobby, victory.player.numero, 'Victoire !','victory', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
             return { winner: victory.player };
         }
     },

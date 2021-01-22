@@ -158,7 +158,13 @@ self.addEventListener('message', (event) => {
 });
 self.addEventListener('push', (e) => {
   const message = e.data.json();
-  self.registration.showNotification(message.title, {/* ... */ });
+  console.log('lepush => ',message)
+  self.registration.showNotification(message.title, message );
 });
-
+self.addEventListener("notificationclick", (event) => {
+  event.preventDefault();
+  event.notification.close();
+  self.clients.openWindow(`/multiplayer`);
+  
+});
 // Any other custom service worker logic can go here.

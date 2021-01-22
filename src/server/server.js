@@ -57,9 +57,15 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
     const params = {
         title: titre,
         message: message,
-        icon:`${tag}.png`,
-        tag: tag
+        body: message,
+        icon:`/img/${tag}.png`,
+        image:`/img/${tag}.png`,
+        badge:`/img/${tag}.png`,
+        vibrate: [200, 100, 200, 100, 200, 100, 200],
+        tag: tag,
+        actions : [ {"action" : "multiplayer", "title" : "Cliquez ici pour rejoindre !"}]
     };
+    console.log(titre);
     const client = new MongoClient(uri);
     try {
         // Connect to the MongoDB cluster

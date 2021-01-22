@@ -7,7 +7,8 @@ export class Player {
     power = null;
     speed = null;
     classCss = null;
-    etat = null
+    numero = null;
+    etat = null;
 
     constructor(cPosition, cName,cClassCss) {
         this.position = cPosition;
@@ -49,6 +50,7 @@ export class Player {
     setParameters(object) {
         this.position = object.position;
         this.name = object.name;
+        this.numero = object.numero;
         this.life = object.life;
         this.power = object.power;
         this.speed = object.speed;
