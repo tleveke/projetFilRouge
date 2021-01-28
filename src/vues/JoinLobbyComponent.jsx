@@ -9,8 +9,63 @@ class JoinLobbyComponent extends Component {
       name: '',
       number: '',
       playerID: '',
+      credentials: '',
       lobbies: []
     }
+  }
+
+  store = () =>{
+    if (!window.indexedDB) {
+      console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+    }
+    
+    const gameData = [
+      {matchID: this.state.number, playerID: this.state.playerID, credentials: this.state.credentials}
+    ]
+
+
+    const dbName = "game_db";
+    let db
+    let request = indexedDB.open(dbName);
+    console.log(request);
+    /*request.onerror = function(event) {
+      // Handle errors.
+    };*/
+    request.onupgradeneeded = function(event) {
+      db = event.target.result;
+
+      console.log(db);
+      let objectStore = db.createObjectStore("matches", { keyPath: "matchID" });
+
+      
+      objectStore.createIndex("playerID", "playerID", { unique: false });
+
+      objectStore.transaction.oncomplete = function(event) {
+        // Store values in the newly created objectStore.
+        let gameObjectStore = db.transaction("matches", "readwrite").objectStore("matches");
+        gameData.forEach(function(game) {
+          gameObjectStore.add(game);
+        });
+      };
+    };
+
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      let transaction = db.transaction(["matches"], "readwrite");
+      transaction.oncomplete = function(event) {
+        console.log("All done!");
+      };
+      var objectStore = transaction.objectStore("matches");
+      gameData.forEach(function(match) {
+        var request = objectStore.add(match);
+        request.onsuccess = function(event) {
+          // event.target.result === customer.ssn;
+        };
+      });
+      console.log(db);
+    };
+
+    
   }
 
   joinLobby = (e) =>{
@@ -25,7 +80,12 @@ class JoinLobbyComponent extends Component {
         .then(data => 
           this.props.history.push('/game', {
             data: data}));
+    
+    this.store()
+    
   }
+
+
 
   saveNameHandler = (event) => {
     this.setState({ name: event.target.value });
@@ -45,7 +105,7 @@ class JoinLobbyComponent extends Component {
     .then(response => response.json())
     .then( (data) => {
       this.setState({lobbies : data.matches});
-      console.log(this.state.lobbies[0].players.filter(player => (player.name == null)));
+      console.log(this.state.lobbies[0]?.players.filter(player => (player.name == null)));
     });
   }
 
@@ -65,7 +125,9 @@ class JoinLobbyComponent extends Component {
           </div>
           <button className="btn btn-success btn-block" onClick={this.joinLobby}>Rejoindre le Lobby</button>
         </form>
-        <p className='bg-secondary text-left mt-3'>lobby disponible :</p>  
+        <div className="bg-secondary mt-3">
+          <p className='text-left pl-3'>Lobbys disponibles :</p>  
+        </div>
         <ul className='list-group mt-1'>
           {this.state.lobbies.map((element) =>  this.lobbyShow(element))}
         </ul>
