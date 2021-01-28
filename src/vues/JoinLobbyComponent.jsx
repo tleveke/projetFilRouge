@@ -61,8 +61,7 @@ class JoinLobbyComponent extends Component {
         request.onsuccess = function(event) {
           // event.target.result === customer.ssn;
         };
-      });
-      console.log(db);
+      })
     };
 
     
@@ -70,7 +69,7 @@ class JoinLobbyComponent extends Component {
 
   joinLobby = (e) =>{
     e.preventDefault()
-    const requestOptions = {
+    /*const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerID: this.state.playerID, playerName: this.state.name })
@@ -79,7 +78,7 @@ class JoinLobbyComponent extends Component {
         .then(response => response.json())
         .then(data => 
           this.props.history.push('/game', {
-            data: data}));
+            data: data}));*/
     
     this.store()
     
@@ -96,7 +95,7 @@ class JoinLobbyComponent extends Component {
   }
 
   lobbyShow(lobby) {
-    return (<li key={lobby.matchID} className='list-group list-group-item-action bg-danger'><button onClick={()=>this.setState({number:lobby.matchID, playerID: lobby.players.filter(player => (player.name == null))[0].id })}>{lobby.matchID}</button></li>)
+    return (<li key={lobby.matchID} className='list-group list-group-item-action bg-danger'><button onClick={()=>this.setState({number:lobby.matchID, playerID: lobby.players.filter(player => (player.name == null))[0]?.id })}>{lobby.matchID}</button></li>)
   }
 
 
@@ -105,7 +104,6 @@ class JoinLobbyComponent extends Component {
     .then(response => response.json())
     .then( (data) => {
       this.setState({lobbies : data.matches});
-      console.log(this.state.lobbies[0]?.players.filter(player => (player.name == null)));
     });
   }
 
