@@ -33,7 +33,7 @@ function getObject(G) {
 
 
 
-    console.log(proba, 'proba',100 - 100 / tabAlive.length);
+    console.log(proba, 'proba', 100 - 100 / tabAlive.length);
 
     if (proba >= 100 - 100 / tabAlive.length) {
         //Création d'un objet
@@ -53,7 +53,7 @@ function getObject(G) {
         //object = G.armors[0];
 
         console.log(object, 'object');
-        
+
         let siPositionIncorrect = true;
         while (siPositionIncorrect) {
 
@@ -66,7 +66,7 @@ function getObject(G) {
             }
         }
         console.log(G.cells);
-        console.log('dsdsdsdssds',G)
+        console.log('dsdsdsdssds', G)
 
 
 
@@ -134,22 +134,22 @@ function getRandomName(length) {
 
 function getMovePossible(player, G) {
     const currentPosition = player.position;
-    
-    
+
+
     let speed = player.speed;
-    
-    if( player.armor !== null) {
+
+    if (player.armor !== null) {
         speed = speed + player.armor.speed;
     }
-    if( player.weapon !== null) {
+    if (player.weapon !== null) {
         speed = speed + player.weapon.speed;
     }
     if (speed < 1) {
         speed = 1;
     }
-    
-    
-    
+
+
+
     const tailleGrid = configGame.width;
 
     const cellcurrent = G.cells[currentPosition];
@@ -225,7 +225,11 @@ export const TicTacToe = {
     minPlayers: 2,
     maxPlayers: 5,
     setup: (ctx, setupData) => {
-
+        
+        console.log(setupData,'setupData','setupData');
+        console.log(ctx,'ctx','ctx');
+        
+        
         let G = { cells: [] };
         G.PlayersPositions = [];
         G.nameLobby = getRandomName(15);
@@ -299,13 +303,13 @@ export const TicTacToe = {
                     try {
                         let opponent = G.cells[id].player;
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
-                        
+
                         let powerofPCurrent = playercurrent.power;
                         if (playercurrent.weapon != null) {
                             powerofPCurrent += playercurrent.weapon.power;
                             playercurrent.looseWeaponDurability();
                         }
-                        
+
                         console.log(playercurrent);
                         sendNotification(G.nameLobby, opponent.numero, 'Perte de PV', 'losePV', "Vous avez perdu un coeur.");
                         G.cells[id].player.loosePV(powerofPCurrent);
@@ -316,28 +320,26 @@ export const TicTacToe = {
                         console.log('pas possible')
                     }
                 },
-                
+
                 passTurn: (G, ctx, id) => {
                     ctx.events.endTurn();
                 },
-                
+
                 getObject: (G, ctx, id) => {
                     try {
                         let object = G.cells[id].object;
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
-                        console.log('Je recupere',object);
+                        console.log('Je recupere', object);
                         if (object.power !== undefined) {
                             playercurrent.gainWeapon(object)
-                        }
-                        else if (object.armor !== undefined) {
+                        } else if (object.armor !== undefined) {
                             playercurrent.gainArmor(object)
-                        }
-                        else if (object.vie !== undefined) {
-                            console.log('Je recupere de la vie',object);
+                        } else if (object.vie !== undefined) {
+                            console.log('Je recupere de la vie', object);
                             playercurrent.gainLife(object)
                         }
-                        
-                        
+
+
                         for (let i = 0; i < G.cells.length; i++) {
 
                             if (G.cells[i].player === playercurrent) {
@@ -347,8 +349,8 @@ export const TicTacToe = {
                         playercurrent.setPosition(id)
                         G.cells[id].setPlayer(playercurrent);
                         G.PlayersPositions[ctx.currentPlayer] = playercurrent;
-                        
-                        
+
+
                     } catch {
                         console.log('pas possible')
                     }
@@ -363,38 +365,24 @@ export const TicTacToe = {
                     if (player.etat === 'dead') {
                         ctx.events.pass();
                     } else {
-                        
-                        
+
+
                         let dateToday = new Date();
                         let date24hours = moment().add(24, 'h').toDate();
                         let date23hours = moment().add(23, 'h').toDate();
                         let date1hours = moment().add(1, 'h').toDate();
                         let date15seconds = moment().add(15, 's').toDate();
-                        
-                        console.log(dateToday,date24hours,date23hours,date1hours,date15seconds);
+
+                        console.log(dateToday, date24hours, date23hours, date1hours, date15seconds);
                         const nameLobby = G.nameLobby;
                         const currentP = ctx.currentPlayer;
+                        const ctx_temp = ctx;
 
                         G = getObject(G);
                         sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour', 'yourturn', "C'est le moment de jouer, IKE !!!!!!");
-                        
-                        
-                        G.JobPass = schedule.scheduleJob(date24hours, function(){
-                            ctx.events.endTurn();
-                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour est passé', 'yourturn', "Vous avez passé votre tour à cause de votre inactivité");
-                        });
-                        G.Job23Hours = schedule.scheduleJob(date23hours, function(){
-                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Encore 1 heure !', 'yourturn', "Vous avez encore 1 heures pour jouer !, sinon vous passerez votre tour");
-                        });
-                        G.Job1Hours = schedule.scheduleJob(date1hours, function(){
-                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Encore 23 heures !', 'yourturn', "Vous avez encore 23 heures pour jouer !, sinon vous passerez votre tour");
-                        });
-                        G.Job15Seconds = schedule.scheduleJob(date15seconds, function(){
-                            console.log('fjdhfdlshfdsljfnlsdfjdslk');
-                            sendNotification(nameLobby, currentP, 'Encore sdqsddsqqs !', 'yourturn', "sqdsqddsqqsdqsdqsddsqdqsdqssdq");
-                        });
-                        
-                        
+
+
+
                         let tabMoveCell = getMovePossible(player, G);
 
                         tabMoveCell.forEach((movecell) => {
@@ -413,11 +401,30 @@ export const TicTacToe = {
 
 
 
+                        G.JobPass = schedule.scheduleJob(date24hours, function() {
+                            ctx.events.endTurn();
+                            sendNotification(nameLobby, currentP, 'Votre tour est passé', 'timeout', "Vous avez passé votre tour à cause de votre inactivité");
+                        });
+                        G.Job23Hours = schedule.scheduleJob(date23hours, function() {
+                            sendNotification(nameLobby, currentP, 'Encore 1 heure !', 'timeout', "Vous avez encore 1 heures pour jouer !, sinon vous passerez votre tour");
+                        });
+                        G.Job1Hours = schedule.scheduleJob(date1hours, function() {
+                            sendNotification(nameLobby, currentP, 'Encore 23 heures !', 'timeout', "Vous avez encore 23 heures pour jouer !, sinon vous passerez votre tour");
+                        });
+                        G.Job15Seconds = schedule.scheduleJob(date15seconds, function() {
+                            sendNotification(nameLobby, currentP, 'Encore 1 heure !', 'timeout', "Vous avez encore 1 heures pour jouer !, sinon vous passerez votre tour");
+                            console.log(ctx, 'le ctx');
+                            ctx.events.pass();
+                            ctx.events.endTurn();
+                            ctx.events.endPhase();
+                            ctx.events.endStage();                        
+                        });
+
                     }
 
                 },
                 onEnd: (G, ctx) => { // Permet de reintialiser la map et verifie si un joueur est mort.
-                    console.log('Gaaaaaa',G,'G')
+                    console.log('Gaaaaaa', G, 'G')
                     G.JobPass.cancel();
                     G.Job23Hours.cancel();
                     G.Job1Hours.cancel();
@@ -437,7 +444,7 @@ export const TicTacToe = {
                                 })
                             }
                         }
-                        if(cell.type === 'object') {
+                        if (cell.type === 'object') {
                             cell.object.removeEtat();
                         }
                         return cell

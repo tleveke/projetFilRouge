@@ -79,7 +79,10 @@ export class TicTacToeBoard extends React.Component {
 
             const body = {
                 subscription: subscription,
-                name: nameJoueur
+                name: nameJoueur,
+                matchID:this.props.matchID,
+                credentials:this.props.credentials,
+                playerID:this.props.playerID
             }
 
             await fetch('https://server.lamft-dev.tk/subscription', {
@@ -136,8 +139,9 @@ export class TicTacToeBoard extends React.Component {
         console.log(this.props.ctx);
         console.log(this.props.G);
         console.log(this.props);
-        //let currentPlayer = this.props.playerID; //Multijoeuur
-        let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
+        console.log(this.props.matchData,'this.props.matchData','this.props.matchData');
+        let currentPlayer = this.props.playerID; //Multijoeuur
+        //let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
         if (this.props.ctx.gameover) {
             console.log('gameover', this.props.ctx.gameover)
             winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>

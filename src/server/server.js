@@ -1,4 +1,4 @@
-const { Server, FlatFile } = require('boardgame.io/server');
+
 const { TicTacToe } = require('../game/Game');
 const { configGame } = require('../game/config');
 const bodyParser = require('koa-body')();
@@ -6,6 +6,8 @@ const { MongoClient } = require('mongodb');
 const schedule = require('node-schedule');
 
 const webpush = require('web-push');
+
+const { Server } = require('boardgame.io/server');
 
 const generateCredentials = async ctx => {
     const authHeader = ctx.request.headers['authorization'];
@@ -25,15 +27,7 @@ const server = Server({
           generateCredentials,
           authenticateCredentials,]
 });
-/*
-const server = Server({
-    games: [TicTacToe],
-    db: new FlatFile({
-        dir: '/var/ProjectYnov/BoardGameStorage/',
-        logging: true,
-    }),
-}); // Erreur avec les variable inséré dans la BDD
-*/
+
 
 const publicVKey = "BItfWGr9-A8X6Jaoy6AHkRyrs4UPEg1Om2cu8iOeaihiF0zVVNbJsYPOViovgSXYP-5t4hf9n84IJQ7_u1yFZLQ";
 const privateVKey = "OUbBKb97HA-5Ftz7Tu0SxadIntVgeR7c_SZbewutGP8";
@@ -49,9 +43,6 @@ webpush.setVapidDetails(
 let tabScheduleJob = [];
 
 let router = server.router;
-
-//router.use(bodyParser.json());
-//router.use(cors())
 
 router.get('/', (ctx, next) => {
     ctx.body = 'Hello world!'
@@ -83,18 +74,18 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
     const titre = ctx.params.titre;
     const tag = ctx.params.tag;
     const message = ctx.params.message;
-    const params = {
-        title: titre,
-        message: message,
-        body: message,
+    let params = {
+        title: unescape(titre),
+        message: unescape(message),
+        body: unescape(message),
         icon: `/img/${tag}.png`,
         image: `/img/${tag}.png`,
         badge: `/img/${tag}.png`,
         vibrate: [200, 100, 200, 100, 200, 100, 200],
         tag: tag,
-        actions: [{ "action": "multiplayer", "title": "Cliquez ici pour rejoindre !" }]
+        actions: []
     };
-    console.log(titre);
+    console.log(params,'params !');
     const client = new MongoClient(uri);
     try {
         // Connect to the MongoDB cluster
@@ -102,9 +93,10 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
 
         const playerSubscription = await client.db("gameFilRouge").collection("subscription").findOne({ name: idPlayer });
         let pushSubscription = playerSubscription['subscription'];
-        console.log(playerSubscription);
-
-        webpush.sendNotification(pushSubscription, new Buffer(JSON.stringify(params), 'utf8'))
+        //console.log(playerSubscription);
+        params.actions.push({ "action": `client/${playerSubscription['matchID']}/${playerSubscription['credentials']}/${playerSubscription['playerID']}`, "title": "Cliquez ici pour rejoindre !" });
+        console.log(params,'params','params');
+        webpush.sendNotification(pushSubscription, JSON.stringify(params))
             .then(
                 function(data) {
                     console.log(data)
@@ -124,24 +116,6 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
         await client.close();
     }
     await next();
-});
-
-router.post('/createCronDay', bodyParser, async (ctx, next) => {
-    console.log(ctx.request.body)
-
-    const bodyCron = ctx.request.body;
-
-    let dateToday = new Date();
-    //let date24hours.setDate(date.getDate() + 1);
-    //let date23hours.setHours(date.getDate() + 23);
-
-    /*let j = schedule.scheduleJob(date24hours, function(){
-      console.log('The world is going to end today.');
-    });
-    
-    
-    tabScheduleJob.push(j);*/
-
 });
 
 

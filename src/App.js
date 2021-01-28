@@ -8,6 +8,7 @@ import Multiplayer from './game/multiplayer'
 import { 
   Nav,
   Navbar,
+  Container
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -30,7 +31,7 @@ export default function App() {
           <Route path="/join-lobby">
             <JoinLobbyComponent />
           </Route>
-          <Route path="/client">
+          <Route path="/client/:matchID/:crendentials/:playerID">
             <ClientFilRouge />
           </Route>
           <Route path="/game">
@@ -49,18 +50,18 @@ export default function App() {
 }
 function Menu() {
   return (
-    <Navbar className="bg-light" expand="lg">
-      <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
-          <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
-          <Nav.Link href="/game">Le Jeu</Nav.Link>
-          <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  );
+      <Navbar className="bg-light container-fluid" expand="lg">
+        <Navbar.Brand href="/">Fil Rouge</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="/create-lobby">Créer un Lobby</Nav.Link>
+            <Nav.Link href="/join-lobby">Rejoindre un Lobby</Nav.Link>
+            <Nav.Link href="/game">Le Jeu</Nav.Link>
+            <Nav.Link href="/multiplayer">Multiplayer</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    );
 }
 

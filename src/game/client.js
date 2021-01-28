@@ -5,7 +5,7 @@ import { configGame } from './config'
 import React, { Component, useState, useEffect } from 'react';
 import { SocketIO } from 'boardgame.io/multiplayer'
 import ReactDOM from 'react-dom';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
 
@@ -13,80 +13,108 @@ import { Button } from 'react-bootstrap';
 
 const Child = () => {
 
-	const [displayGame, setDisplayGame] = useState(false);
-	let interval = null;
-	useEffect(() => {
-		interval = setInterval(() => {
-			fetchGame();
-		}, 3000);
-	});
+  const [displayGame, setDisplayGame] = useState(false);
+  let interval = null;
+  useEffect(() => {
+	interval = setInterval(() => {
+	  fetchGame();
+	}, 3000);
+  });
+  
+  const params = useParams();
+  const history = useHistory();
+  console.log(params, params, params)
+  const ClientFilRouge = Client({
+	game: TicTacToe,
+	board: TicTacToeBoard,
+	multiplayer: SocketIO({ server: `${configGame.httpORs}://${configGame.urlServer}` }),
+	debug: false
+  });
+  const fetchLeave = () => {
 
-//Peut être mettre IdGame dans url avec credential et player ID
-/*
+	const jsonRequest = { playerID: params.playerID, credentials: params.crendentials }
+	const requestOptions = {
+	  method: 'POST',
+	  headers: { 'Content-Type': 'application/json' },
+	  body: JSON.stringify(jsonRequest)
+	};
 
-<Route path="/tickets/:id" component={Tickets} />
-this.props.history.push(`/tickets/${rowIndex[0]}`);
-console.log(this.props.match.params.id)
+	fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${params.matchID}/leave`, requestOptions)
+	  .then(response => response.json())
+	  .then((data) => {
+		  
+		if (window.indexedDB) {
+			
+			let db;
+			let request = indexedDB.open(configGame.dbName);
+		
+			request.onerror = function(event) {
+				console.log("error: ", event);
+			};
+		
+			request.onsuccess = function(event) {
+				db = request.result;
+				
+				const objectStore = db.transaction("matches", "readwrite").objectStore("matches");
+				const objectStoreRequest = objectStore.delete(`${params.matchID}`);
+				  
+				objectStoreRequest.onsuccess = function(event) {
+					console.log("Lobby supprimé")
+				};
+				
+			}.bind(this);
+		}
+		  
+		  
+		history.push(`/`);
+	  });
+  }
+  const ButtonLeave = <Button id="passTour" variant="secondary" onClick={() => { fetchLeave() }}> Quittons cette partie </Button>
 
-  let { topicId } = useParams();
-  return <h3>Requested topic ID: {topicId}</h3>;
+  const fetchGame = () => {
+	fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${params.matchID}`)
+	  .then(response => response.json())
+	  .then((data) => {
+		console.log(data)
+		let show = true;
+		data.players.forEach((play) => {
+		  if (play.name === undefined) {
+			show = false;
+		  }
+		});
+		setDisplayGame(show)
+	  });
+  }
 
-*/
-	const game = useLocation().state.data;
-	const history = useHistory();
-	console.log(game);
-	const ClientFilRouge = Client({
+  const showGame = () => {
+	return (
+	  <div>
+		<ClientFilRouge matchID={params.matchID} playerID={params.playerID.toString()} credentials={params.crendentials} />
+		{ButtonLeave}
+	  </div>
+	)
+  }
+  const showLobby = () => {
+	return (
+	  <div>
+		Pas encore assez de joueur
+		{ ButtonLeave}
+	  </div>
+	)
+  }
+  /*const ClientFilRouge = Client({
 		game: TicTacToe,
-		board: TicTacToeBoard,
-		multiplayer: SocketIO({ server: `${configGame.httpORs}://${configGame.urlServer}` }),
-		debug: false
-	});
+	board: TicTacToeBoard,
+	debug: false
+  });*/
 
-	const fetchGame = () => {
-		fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${game.idGame}`)
-			.then(response => response.json())
-			.then((data) => {
-				console.log(data)
-				let show = true;
-
-				data.players.forEach((play) => {
-					if (play.name === undefined) {
-						show = false;
-					}
-				});
-				setDisplayGame(show)
-			});
-	}
-
-	const showGame = () => {
-		return ( <
-			ClientFilRouge matchID = { game.idGame } playerID = { game.playerID.toString() } credentials = { game.playerCredentials }
-			/>
-		)
-	}
-	const showLobby = () => {
-		return ( <
-			div >
-
-			Pas encore assez de joueur
-
-			<
-			/div>
-		)
-	}
-	/*const ClientFilRouge = Client({
-		game: TicTacToe,
-		board: TicTacToeBoard,
-		debug: false
-	});*/
-
-	let i = 2;
-	if (displayGame) {
-		clearInterval(interval);
-		return showGame();
-	} else {
-		fetchGame();
-		return showLobby();
-	}
+  let i = 2;
+  if (displayGame) {
+	clearInterval(interval);
+	return showGame();
+  } else {
+	fetchGame();
+	return showLobby();
+  }
 }
 export default Child;

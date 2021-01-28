@@ -17,7 +17,7 @@ class NewLobbyComponent extends Component {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ numPlayers: this.state.number })
+      body: JSON.stringify({ numPlayers: this.state.number, setupData: {nameGame:this.state.name} })
     };
     fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/create`, requestOptions)
         .then(response => response.json())

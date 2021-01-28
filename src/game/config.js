@@ -9,6 +9,7 @@ export const configGame = {
     powerDefault : 1,
     speedDefault : 2,
     serverPort : 12538,
+    dbName:"game_db",
     httpORs : 'https',
     urlServer : 'server.lamft-dev.tk'
 }
