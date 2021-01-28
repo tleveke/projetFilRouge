@@ -3,6 +3,7 @@ import Home from "./vues/Home";
 import NewLobbyComponent from './vues/NewLobbyComponent';
 import JoinLobbyComponent from './vues/JoinLobbyComponent';
 import GameFilRouge from './game/index'
+import ClientFilRouge from './game/client'
 import Multiplayer from './game/multiplayer'
 import { 
   Nav,
@@ -17,6 +18,7 @@ import {
 
 
 export default function App() {
+  
   return (
     <Router >
       <Menu />
@@ -27,6 +29,9 @@ export default function App() {
           </Route>
           <Route path="/join-lobby">
             <JoinLobbyComponent />
+          </Route>
+          <Route path="/client">
+            <ClientFilRouge />
           </Route>
           <Route path="/game">
             <GameFilRouge />

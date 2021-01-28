@@ -5,6 +5,8 @@ import { Weapon, Armor, Life, Other } from './Object';
 import data from '../assets/js/map.json';
 import { Player } from './Player'
 const fetch = require("node-fetch");
+const schedule = require('node-schedule');
+const moment = require('moment');
 
 
 
@@ -63,12 +65,13 @@ function getObject(G) {
                 G.cells[objectPosition].setObjectCell(object);
             }
         }
-        console.log(G.cells) 
-        return G.cells;
+        console.log(G.cells);
+        console.log('dsdsdsdssds',G)
 
 
 
     }
+    return G;
 
 }
 
@@ -314,6 +317,10 @@ export const TicTacToe = {
                     }
                 },
                 
+                passTurn: (G, ctx, id) => {
+                    ctx.events.endTurn();
+                },
+                
                 getObject: (G, ctx, id) => {
                     try {
                         let object = G.cells[id].object;
@@ -356,9 +363,38 @@ export const TicTacToe = {
                     if (player.etat === 'dead') {
                         ctx.events.pass();
                     } else {
+                        
+                        
+                        let dateToday = new Date();
+                        let date24hours = moment().add(24, 'h').toDate();
+                        let date23hours = moment().add(23, 'h').toDate();
+                        let date1hours = moment().add(1, 'h').toDate();
+                        let date15seconds = moment().add(15, 's').toDate();
+                        
+                        console.log(dateToday,date24hours,date23hours,date1hours,date15seconds);
+                        const nameLobby = G.nameLobby;
+                        const currentP = ctx.currentPlayer;
 
+                        G = getObject(G);
                         sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour', 'yourturn', "C'est le moment de jouer, IKE !!!!!!");
-
+                        
+                        
+                        G.JobPass = schedule.scheduleJob(date24hours, function(){
+                            ctx.events.endTurn();
+                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Votre tour est passé', 'yourturn', "Vous avez passé votre tour à cause de votre inactivité");
+                        });
+                        G.Job23Hours = schedule.scheduleJob(date23hours, function(){
+                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Encore 1 heure !', 'yourturn', "Vous avez encore 1 heures pour jouer !, sinon vous passerez votre tour");
+                        });
+                        G.Job1Hours = schedule.scheduleJob(date1hours, function(){
+                            sendNotification(G.nameLobby, ctx.currentPlayer, 'Encore 23 heures !', 'yourturn', "Vous avez encore 23 heures pour jouer !, sinon vous passerez votre tour");
+                        });
+                        G.Job15Seconds = schedule.scheduleJob(date15seconds, function(){
+                            console.log('fjdhfdlshfdsljfnlsdfjdslk');
+                            sendNotification(nameLobby, currentP, 'Encore sdqsddsqqs !', 'yourturn', "sqdsqddsqqsdqsdqsddsqdqsdqssdq");
+                        });
+                        
+                        
                         let tabMoveCell = getMovePossible(player, G);
 
                         tabMoveCell.forEach((movecell) => {
@@ -374,9 +410,6 @@ export const TicTacToe = {
                         });
 
                         blockCells(tabMoveCell, player, G)
-                        
-                        
-                        G = getObject(G);
 
 
 
@@ -384,6 +417,11 @@ export const TicTacToe = {
 
                 },
                 onEnd: (G, ctx) => { // Permet de reintialiser la map et verifie si un joueur est mort.
+                    console.log('Gaaaaaa',G,'G')
+                    G.JobPass.cancel();
+                    G.Job23Hours.cancel();
+                    G.Job1Hours.cancel();
+                    G.Job15Seconds.cancel();
                     G.cells = G.cells.map(cell => {
                         if (cell.type === 'move' || cell.type === 'block') {
                             cell.setVideCell()

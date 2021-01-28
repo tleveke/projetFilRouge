@@ -110,6 +110,10 @@ export class TicTacToeBoard extends React.Component {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    passTour() {
+        this.props.moves.passTurn();
+    }
+
     onClick(id) {
         let cell = this.props.G.cells[id];
         document.getElementById('error').innerHTML = '';
@@ -252,6 +256,11 @@ export class TicTacToeBoard extends React.Component {
                         if (cell.object.image !== '') {
                             element.classList.add(cell.object.image);
                         }
+                        
+                        let p = document.createElement('p');
+                        p.textContent = cell.object.name;
+                        docSpan.appendChild(p);
+                        docSpan.classList.add('popupObject')
 
                     }
                     else if (cell.type === 'opponent') {
@@ -293,6 +302,7 @@ export class TicTacToeBoard extends React.Component {
                             </div>
                             {winner}
                             {buttonNotif}
+                            <Button id="passTour" variant="secondary" onClick={() => { this.passTour() }}>Cliquez ici, pour passer votre tour !</Button>
                         </Col>
                     </Row>
                 </Container>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route , withRouter} from 'react-router-dom';
 import { configGame } from '../game/config'
 
 class JoinLobbyComponent extends Component {
@@ -22,9 +23,13 @@ class JoinLobbyComponent extends Component {
     };
     fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${this.state.number}/join`, requestOptions)
         .then(response => response.json())
-        .then(data => 
-          this.props.history.push('/game', {
-            data: data}));
+        .then(data => {
+          
+          const game = { playerCredentials : data.playerCredentials, idGame:this.state.number,playerID: this.state.playerID, playerName: this.state.name  }
+          
+          this.props.history.push('/client', {
+            data: game});
+        });
   }
 
   saveNameHandler = (event) => {
@@ -75,4 +80,4 @@ class JoinLobbyComponent extends Component {
 
 }
 
-export default JoinLobbyComponent;
+export default withRouter(JoinLobbyComponent);

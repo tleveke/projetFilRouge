@@ -87,7 +87,7 @@ export class Player {
         let looselife = 0
         if (this.armor != null) {
             
-            this.armor.armor = this.armor.armor - powerOfPlayer
+            this.armor.armor -= powerOfPlayer
             if (this.armor.armor <= 0) {
                 looselife = this.armor.armor * -1;
                 this.armor = null
