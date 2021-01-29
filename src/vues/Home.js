@@ -84,41 +84,31 @@ class Home extends Component {
   }
 
   lobbyShow(lobby) {
-    return ( < li key = { lobby.matchID } onClick = {
-        () => { this.goGame(lobby) } } className = 'list-group list-group-item-action bg-danger' > { lobby.nameLobby } < /li>)
+    return ( <li key = { lobby.matchID } onClick = {
+        () => { this.goGame(lobby) } } className = 'list-group list-group-item-action bg-danger' > { lobby.nameLobby } </li>)
     }
     render(lobbyList = this.state.lobbies) {
       console.log(lobbyList);
-      return ( <
-        div className = 'text-center col-lg-5 mx-auto' >
-        <
-        img width = '100%'
+      return ( <div className = 'text-center col-lg-5 mx-auto'>
+        <img width = '300'
         className = 'mt-3'
         src = "img/logo-fil-rouge.png"
-        alt = '' / >
-        <
-        div >
-        <
-        button onClick = {
-          () => { this.goCreateLobby() } } className = 'btn btn-success mt-3' > Créer un lobby < /button> </div >
-        <
-        div >
-        <
-        button onClick = {
-          () => { this.goJoinLobby() } } className = 'btn btn-primary mt-3' > Rejoindre un lobby < /button> </div > < p className = 'bg-secondary text-left mt-3' > Rejoignez vos lobbys: < /p>   <ul className='list-group mt-1' >
+        alt = '' />
+        <div>
+        <button onClick = {
+          () => { this.goCreateLobby() } } className = 'btn btn-success mt-3' > Créer un lobby </button> </div >
+        <div>
+        <button onClick = {
+          () => { this.goJoinLobby() } } className = 'btn btn-primary mt-3' > Rejoindre un lobby </button> </div > <p className = 'bg-secondary text-left mt-3' > Rejoignez vos lobbys: </p>   <ul className='list-group mt-1'>
 
         { lobbyList.map((element) => this.lobbyShow(element)) }
 
-        <
-        /ul>
-        <
-        div >
-        <
-        button onClick = {
-          () => { this.deleteLobby() } } className = 'btn btn-secondary mt-3' > Supprimer vos lobbys en cours < /button> </div >
+        </ul>
+        <div >
+        <button onClick = {
+          () => { this.deleteLobby() } } className = 'btn btn-success mt-3' > Supprimer vos lobbys en cours </button> </div >
 
-        { /* Ici on a une liste de tous les lobbys pour rejoindre un lobby en cliquant dessus*/ } <
-        /div>
+        { /* Ici on a une liste de tous les lobbys pour rejoindre un lobby en cliquant dessus*/ } </div>
       )
     }
   }
