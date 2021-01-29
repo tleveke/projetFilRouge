@@ -9,23 +9,8 @@ const webpush = require('web-push');
 
 const { Server } = require('boardgame.io/server');
 
-const generateCredentials = async ctx => {
-    const authHeader = ctx.request.headers['authorization'];
-    const token = await authService.decodeToken(authHeader);
-    return token.uid;
-}
-
-const authenticateCredentials = async (credentials, playerMetadata) => {
-    if (credentials) {
-        const token = await authService.decodeToken(credentials);
-        if (token.uid === playerMetadata.credentials) return true;
-    }
-    return false;
-}
 const server = Server({
-    games: [TicTacToe,
-          generateCredentials,
-          authenticateCredentials,]
+    games: [TicTacToe]
 });
 
 

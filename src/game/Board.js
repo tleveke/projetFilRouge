@@ -276,8 +276,10 @@ export class TicTacToeBoard extends React.Component {
             }
             tbody.push(<tr key={i}>{cells}</tr>);
         }
-
-        let buttonNotif = <Button id="buttonNotif" variant="info" onClick={() => { this.getNotification() }}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications de cette partie</Button>;
+        let buttonNotif = '';
+        if (('Notification' in window)) {
+            buttonNotif = <Button id="buttonNotif" variant="info" onClick={() => { this.getNotification() }}><img height="20" src="/img/notification.svg"></img>Cliquez ici, pour accepter les notifications de cette partie</Button>;
+        }
 
 
 
@@ -290,8 +292,8 @@ export class TicTacToeBoard extends React.Component {
             <ResponsiveEmbed aspectRatio="4by3">
                 <Container fluid>
                     <Row>
-                        <Col className="center">
-                            <Table responsive className="map" id="board">
+                        <Col style={{ width: '100%', height: 'auto' }} className="center">
+                            <Table responsive="sm" className="map" id="board">
                                 <tbody>{tbody}</tbody>
                             </Table>
                         </Col>

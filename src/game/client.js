@@ -16,9 +16,11 @@ const Child = () => {
   const [displayGame, setDisplayGame] = useState(false);
   let interval = null;
   useEffect(() => {
-	interval = setInterval(() => {
-	  fetchGame();
-	}, 3000);
+	if (navigator.onLine) {
+		interval = setInterval(() => {
+		  fetchGame();
+		}, 3000);
+	}
   });
   
   const params = useParams();
@@ -108,13 +110,19 @@ const Child = () => {
 	debug: false
   });*/
 
-  let i = 2;
-  if (displayGame) {
-	clearInterval(interval);
-	return showGame();
-  } else {
-	fetchGame();
-	return showLobby();
+  if (navigator.onLine) {
+		if (displayGame) {
+		  clearInterval(interval);
+		  return showGame();
+		} else {
+		  fetchGame();
+		  return showLobby();
+		}
+  }
+  else {
+	  return (
+		  <p> Pas de connection, impossible de jouer en ligne ! </p>
+	  )
   }
 }
 export default Child;

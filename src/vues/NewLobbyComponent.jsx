@@ -52,7 +52,7 @@ class NewLobbyComponent extends Component {
   render() {
     return (
       <div className='text-center col-lg-5 mx-auto' >
-        <img width='300' className='mt-3' src='img/logo-fil-rouge.png' alt= ''/> 
+        <img width='100%' className='mt-3' src='img/logo-fil-rouge.png' alt= ''/> 
         <h2 className="text-center">Créer un Lobby</h2>
         <form className="form-signup col-10 mx-auto" >
           <div className="form-group">

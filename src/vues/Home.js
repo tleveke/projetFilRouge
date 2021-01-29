@@ -19,7 +19,6 @@ class Home extends Component {
   initDB() {
     if (window.indexedDB) {
 
-      let tab = this.state.lobbies;
       let db;
       let request = indexedDB.open(configGame.dbName);
 
@@ -63,7 +62,6 @@ class Home extends Component {
   }
   deleteLobby(lobby) {
     if (window.indexedDB && this.state.db !== null) {
-      let tab = [];
       const objectStore = this.state.db.transaction(["matches"], "readwrite").objectStore("matches");
       objectStore.clear();
       this.setState({ lobbies: [] });
@@ -94,7 +92,7 @@ class Home extends Component {
       return ( <
         div className = 'text-center col-lg-5 mx-auto' >
         <
-        img width = '300'
+        img width = '100%'
         className = 'mt-3'
         src = "img/logo-fil-rouge.png"
         alt = '' / >
@@ -117,7 +115,7 @@ class Home extends Component {
         div >
         <
         button onClick = {
-          () => { this.deleteLobby() } } className = 'btn btn-success mt-3' > Supprimer vos lobbys en cours < /button> </div >
+          () => { this.deleteLobby() } } className = 'btn btn-secondary mt-3' > Supprimer vos lobbys en cours < /button> </div >
 
         { /* Ici on a une liste de tous les lobbys pour rejoindre un lobby en cliquant dessus*/ } <
         /div>

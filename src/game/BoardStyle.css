@@ -176,6 +176,18 @@ Col {
 
 /*Button notifications*/
 
+@media only screen and (max-width : 3000px) {
+    .map {
+        width: 800px;
+        height: 800px;
+    }
+
+    .cell {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
+
 @media only screen and (max-width : 1600px) {
     .map {
         width: 600px;

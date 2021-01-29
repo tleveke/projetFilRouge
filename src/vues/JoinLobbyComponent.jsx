@@ -71,30 +71,40 @@ class JoinLobbyComponent extends Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerID: this.state.playerID, playerName: this.state.name })
     };
-    fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${this.state.number}/join`, requestOptions)
-        .then(response =>  {
-          if (response.status === 200) {
-            return response.json()
-          }
-          else {
-            console.log('saazaa');
-            return {error : true,name: 'Lobby complet !'};
-          }
-        })
-        .then(data => {
-          
-          if (data.error) {
-            console.log('sqsqqqsqsqs');
-            this.setState({error: data})
-          }
-          else {
-            const game = { playerCredentials : data.playerCredentials, idGame:this.state.number,playerID: this.state.playerID, playerName: this.state.name, nameLobby:this.state.nameLobby  }
-            this.storeGame(game)
+    console.log(navigator.onLine,"navigator.onLine");
+    if (navigator.onLine) {
+      fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${this.state.number}/join`, requestOptions)
+          .then(response =>  {
+            if (response.status === 200) {
+              return response.json()
+            }
+            else if (response.status === 404) {
+              return {error : true,name: 'Lobby inexistant !'};
+            }
+            else {
+              return {error : true,name: 'Lobby complet !'};
+            }
+          })
+          .then(data => {
             
-            this.props.history.push(`/client/${this.state.number}/${data.playerCredentials}/${this.state.playerID}`, {
-              data: game});
-          }
-        });
+            if (data.error) {
+              this.setState({error: data})
+            }
+            else {
+              const game = { playerCredentials : data.playerCredentials, idGame:this.state.number,playerID: this.state.playerID, playerName: this.state.name, nameLobby:this.state.nameLobby  }
+              this.storeGame(game)
+              
+              this.props.history.push(`/client/${this.state.number}/${data.playerCredentials}/${this.state.playerID}`, {
+                data: game});
+            }
+          })
+          .catch(function(error) {
+            this.setState({error: {error : true,name: 'Pas de connexion à internet !'}})
+          }.bind(this));
+    }
+    else {
+      this.setState({error: {error : true,name: 'Pas de connexion à internet !'}})
+    }
   }
 
   saveNameHandler = (event) => {
@@ -124,18 +134,21 @@ class JoinLobbyComponent extends Component {
 
 
   componentDidMount() {
-    fetch (`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge`)
-    .then(response => response.json())
-    .then( (data) => {
-      this.setState({lobbies : data.matches});
-      console.log(this.state.lobbies[0]?.players.filter(player => (player.name == null)));
-    });
+    
+    if (navigator.onLine) {
+      fetch (`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge`)
+      .then(response => response.json())
+      .then( (data) => {
+        this.setState({lobbies : data.matches});
+        console.log(this.state.lobbies[0]?.players.filter(player => (player.name == null)));
+      });
+    }
   }
 
   render() {
     return (
       <div className='text-center col-lg-5 mx-auto' >
-        <img width='300' className='mt-3' src='img/logo-fil-rouge.png' alt= ''/> 
+        <img width='100%' className='mt-3' src='img/logo-fil-rouge.png' alt= ''/> 
         <h2 className="text-center">Rejoindre un lobby :</h2>
         <form className="form-signup col-10 mx-auto" >
           <div className="form-group">

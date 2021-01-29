@@ -225,11 +225,11 @@ export const TicTacToe = {
     minPlayers: 2,
     maxPlayers: 5,
     setup: (ctx, setupData) => {
-        
-        console.log(setupData,'setupData','setupData');
-        console.log(ctx,'ctx','ctx');
-        
-        
+
+        console.log(setupData, 'setupData', 'setupData');
+        console.log(ctx, 'ctx', 'ctx');
+
+
         let G = { cells: [] };
         G.PlayersPositions = [];
         G.nameLobby = getRandomName(15);
@@ -373,7 +373,6 @@ export const TicTacToe = {
                         let date1hours = moment().add(1, 'h').toDate();
                         let date15seconds = moment().add(15, 's').toDate();
 
-                        console.log(dateToday, date24hours, date23hours, date1hours, date15seconds);
                         const nameLobby = G.nameLobby;
                         const currentP = ctx.currentPlayer;
                         const ctx_temp = ctx;
@@ -411,14 +410,11 @@ export const TicTacToe = {
                         G.Job1Hours = schedule.scheduleJob(date1hours, function() {
                             sendNotification(nameLobby, currentP, 'Encore 23 heures !', 'timeout', "Vous avez encore 23 heures pour jouer !, sinon vous passerez votre tour");
                         });
-                        G.Job15Seconds = schedule.scheduleJob(date15seconds, function() {
-                            sendNotification(nameLobby, currentP, 'Encore 1 heure !', 'timeout', "Vous avez encore 1 heures pour jouer !, sinon vous passerez votre tour");
-                            console.log(ctx, 'le ctx');
+                        /* G.Job15Seconds = schedule.scheduleJob(date15seconds, function() {
+                            sendNotification(nameLobby, currentP, '15 sec', 'timeout', "pushTest");
                             ctx.events.pass();
-                            ctx.events.endTurn();
-                            ctx.events.endPhase();
-                            ctx.events.endStage();                        
-                        });
+                            //console.log(G.cells[1],'G') //Erreur Cannot perform 'get' on a proxy that has been revoked        
+                        }); */
 
                     }
 
@@ -428,7 +424,7 @@ export const TicTacToe = {
                     G.JobPass.cancel();
                     G.Job23Hours.cancel();
                     G.Job1Hours.cancel();
-                    G.Job15Seconds.cancel();
+                    //G.Job15Seconds.cancel();
                     G.cells = G.cells.map(cell => {
                         if (cell.type === 'move' || cell.type === 'block') {
                             cell.setVideCell()
@@ -496,70 +492,3 @@ export const TicTacToe = {
         },*/
     },
 }
-
-
-/*
-
-moves: {
-
-        attackPlayer: (G, ctx, id) => {
-            let opponent = G.cells[id].player;
-            let playercurrent = PlayersPositions[ctx.currentPlayer];
-            G.cells[id].player.setLife(opponent.life - playercurrent.power);
-        },
-
-        movePlayer: (G, ctx, id) => {
-            for (let i = 0; i < G.cells.length; i++) {
-
-                if (G.cells[i].player === PlayersPositions[ctx.currentPlayer]) {
-                    G.cells[i].setVideCell()
-                }
-            }
-
-
-
-
-            let playerObject = PlayersPositions[ctx.currentPlayer];
-            playerObject.setPosition(id)
-
-            G.cells[id].setPlayer(playerObject);
-            PlayersPositions[ctx.currentPlayer] = playerObject;
-
-
-            //TODO; QUAND joueur A coté alors pas de tour passé;
-
-
-            /////////// ^  On Bouge  ^//////////
-
-
-
-
-
-
-            //TODO : On pourra faire des appels aux API.
-        }
-    },
-
-{
-    'typeCell' = 'move',
-    'value' = '';
-}
-
-{
-    'typeCell' = 'vide',
-    'value' = '';
-}
-
-{
-    'typeCell' = 'player',
-    'value' = '';
-}
-
-{
-    'typeCell' = 'item',
-    'value' = '';
-}
-
-
-
-*/
