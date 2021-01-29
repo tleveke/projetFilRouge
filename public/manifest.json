@@ -23,13 +23,13 @@
       "name": "Crée un lobby",
       "short_name": "create",
       "url": "/create-lobby",
-      "icons": [{"src": "img/loser.png", "sizes": "192x192"}]
+      "icons": [{"src": "img/loser.png", "sizes": "512x512"}]
     },
     {
       "name": "Rejoindre un lobby",
       "short_name": "join",
       "url": "/join-lobby",
-      "icons": [{"src": "img/losePV.png", "sizes": "192x192"}]
+      "icons": [{"src": "img/losePV_shortcut.png", "sizes": "192x192"}]
     }
   ]
 }
