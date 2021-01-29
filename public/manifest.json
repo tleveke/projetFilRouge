@@ -30,6 +30,6 @@
       "short_name": "join",
       "url": "/join-lobby",
       "icons": [{"src": "img/losePV.png", "sizes": "192x192"}]
-    },
+    }
   ]
 }
