@@ -27,3 +27,4 @@
 
 - Détection si l'utilisateur est en ligne ou non.
 - Quelques améliorations du css
+- Modification des icones et du manifest

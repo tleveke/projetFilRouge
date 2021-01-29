@@ -3,12 +3,12 @@
   "name": "Projet Fil Rouge",
   "icons": [
     {
-      "src": "logo192.png",
+      "src": "icon_chateau192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "icon_chateau512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -23,7 +23,7 @@
       "name": "Crée un lobby",
       "short_name": "create",
       "url": "/create-lobby",
-      "icons": [{"src": "img/attack_notification.svg", "sizes": "192x192"}]
+      "icons": [{"src": "img/loser.png", "sizes": "192x192"}]
     },
     {
       "name": "Rejoindre un lobby",
@@ -31,11 +31,5 @@
       "url": "/join-lobby",
       "icons": [{"src": "img/losePV.png", "sizes": "192x192"}]
     },
-    {
-      "name": "Multiplayer",
-      "short_name": "multi",
-      "url": "/multiplayer",
-      "icons": [{"src": "img/online.svg.svg", "sizes": "192x192"}]
-    }
   ]
 }
