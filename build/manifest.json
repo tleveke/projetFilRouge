@@ -1,0 +1,41 @@
+{
+  "short_name": "Projet Fil Rouge",
+  "name": "Projet Fil Rouge",
+  "icons": [
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#111",
+  "background_color": "#111",
+  "shortcuts": [
+    {
+      "name": "Crée un lobby",
+      "short_name": "create",
+      "url": "/create-lobby",
+      "icons": [{"src": "img/attack_notification.svg", "sizes": "192x192"}]
+    },
+    {
+      "name": "Rejoindre un lobby",
+      "short_name": "join",
+      "url": "/join-lobby",
+      "icons": [{"src": "img/losePV.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Multiplayer",
+      "short_name": "multi",
+      "url": "/multiplayer",
+      "icons": [{"src": "img/online.svg.svg", "sizes": "192x192"}]
+    }
+  ]
+}
