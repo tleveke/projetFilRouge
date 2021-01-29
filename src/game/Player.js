@@ -65,15 +65,15 @@ export class Player {
     /* Gain methods */
     
     gainWeapon(weapon) {
-        console.log("J'ai obtenu un arme", weapon)
+
         this.weapon = weapon;
     }
     gainArmor(armor) {
-        console.log("J'ai obtenu une armure", armor)
+
         this.armor = armor;
     }
     gainLife(life) {
-        console.log("J'ai obtenu de la vie", life)
+
         this.life = this.life + life.vie;
     }
     

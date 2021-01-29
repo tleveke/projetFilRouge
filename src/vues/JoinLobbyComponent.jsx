@@ -23,7 +23,7 @@ class JoinLobbyComponent extends Component {
   
       let db;
       let request = indexedDB.open(configGame.dbName, 1);
-      console.log(request);
+
       
       request.onupgradeneeded = function(event) {
         db = event.target.result;
@@ -44,15 +44,15 @@ class JoinLobbyComponent extends Component {
         db = event.target.result;
         let transaction = db.transaction(["matches"], "readwrite");
         transaction.oncomplete = function(event) {
-          console.log("All done!");
+
         };
         var objectStore = transaction.objectStore("matches");
           var request = objectStore.add(gameData);
           request.onsuccess = function(event) {
             // event.target.result === customer.ssn;
           };
-        console.log(db);
-      };
+
+        };
       
       
     }
@@ -71,7 +71,7 @@ class JoinLobbyComponent extends Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerID: this.state.playerID, playerName: this.state.name })
     };
-    console.log(navigator.onLine,"navigator.onLine");
+
     if (navigator.onLine) {
       fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${this.state.number}/join`, requestOptions)
           .then(response =>  {
@@ -140,7 +140,7 @@ class JoinLobbyComponent extends Component {
       .then(response => response.json())
       .then( (data) => {
         this.setState({lobbies : data.matches});
-        console.log(this.state.lobbies[0]?.players.filter(player => (player.name == null)));
+
       });
     }
   }

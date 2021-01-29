@@ -33,8 +33,8 @@ function getObject(G) {
 
 
 
-    console.log(proba, 'proba', 100 - 100 / tabAlive.length);
 
+    
     if (proba >= 100 - 100 / tabAlive.length) {
         //Création d'un objet
 
@@ -52,8 +52,8 @@ function getObject(G) {
         }
         //object = G.armors[0];
 
-        console.log(object, 'object');
 
+        
         let siPositionIncorrect = true;
         while (siPositionIncorrect) {
 
@@ -65,8 +65,7 @@ function getObject(G) {
                 G.cells[objectPosition].setObjectCell(object);
             }
         }
-        console.log(G.cells);
-        console.log('dsdsdsdssds', G)
+        
 
 
 
@@ -89,7 +88,7 @@ function sendNotification(nameLobby, playerID, titre, tag, message) {
             return response;
         })
         .then(function(response) {
-            console.log(response)
+
         });
 }
 
@@ -99,7 +98,7 @@ function finishGame(G) {
             return response;
         })
         .then(function(response) {
-            console.log(response)
+
         });;
 }
 
@@ -225,9 +224,7 @@ export const TicTacToe = {
     minPlayers: 2,
     maxPlayers: 5,
     setup: (ctx, setupData) => {
-
-        console.log(setupData, 'setupData', 'setupData');
-        console.log(ctx, 'ctx', 'ctx');
+        
 
 
         let G = { cells: [] };
@@ -277,7 +274,7 @@ export const TicTacToe = {
 
                 moveorAttackPlayer: (G, ctx, id) => {
 
-                    console.log(id, ctx)
+
                     let playerActual = G.PlayersPositions[ctx.currentPlayer];
                     try {
                         for (let i = 0; i < G.cells.length; i++) {
@@ -293,7 +290,7 @@ export const TicTacToe = {
                         //ctx.events.setPhase('attackPlayer');
 
                     } catch {
-                        console.log('pas possible')
+
                     }
 
                 },
@@ -310,14 +307,14 @@ export const TicTacToe = {
                             playercurrent.looseWeaponDurability();
                         }
 
-                        console.log(playercurrent);
+
                         sendNotification(G.nameLobby, opponent.numero, 'Perte de PV', 'losePV', "Vous avez perdu un coeur.");
                         G.cells[id].player.loosePV(powerofPCurrent);
                         if (G.cells[id].player.life <= 0) {
                             sendNotification(G.nameLobby, G.cells[id].player.numero, 'Défaite', 'loser', "Vous avez perdu cette partie, vous êtes mort.");
                         }
                     } catch {
-                        console.log('pas possible')
+
                     }
                 },
 
@@ -329,13 +326,13 @@ export const TicTacToe = {
                     try {
                         let object = G.cells[id].object;
                         let playercurrent = G.PlayersPositions[ctx.currentPlayer];
-                        console.log('Je recupere', object);
+
                         if (object.power !== undefined) {
                             playercurrent.gainWeapon(object)
                         } else if (object.armor !== undefined) {
                             playercurrent.gainArmor(object)
                         } else if (object.vie !== undefined) {
-                            console.log('Je recupere de la vie', object);
+
                             playercurrent.gainLife(object)
                         }
 
@@ -352,7 +349,7 @@ export const TicTacToe = {
 
 
                     } catch {
-                        console.log('pas possible')
+
                     }
                 },
             },
@@ -420,7 +417,7 @@ export const TicTacToe = {
 
                 },
                 onEnd: (G, ctx) => { // Permet de reintialiser la map et verifie si un joueur est mort.
-                    console.log('Gaaaaaa', G, 'G')
+
                     G.JobPass.cancel();
                     G.Job23Hours.cancel();
                     G.Job1Hours.cancel();
@@ -472,7 +469,7 @@ export const TicTacToe = {
     endIf: (G, ctx) => {
         let victory = IsVictory(G);
         if (victory.victory) {
-            //console.log('Le vainqueur est :',victory.player)
+
             sendNotification(G.nameLobby, victory.player.numero, 'Victoire !', 'victory', "Félicitation ! Vous êtes parvenus a vaincre vos adversaires ");
 
             finishGame(G);

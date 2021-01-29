@@ -136,17 +136,11 @@ export class TicTacToeBoard extends React.Component {
 
     render() {
         let winner = '';
-        console.log(this.props.ctx);
-        console.log(this.props.G);
-        console.log(this.props);
-        console.log(this.props.matchData,'this.props.matchData','this.props.matchData');
         let currentPlayer = this.props.playerID; //Multijoeuur
         //let currentPlayer = this.props.ctx.currentPlayer; //Multijoeuur
         if (this.props.ctx.gameover) {
-            console.log('gameover', this.props.ctx.gameover)
             winner = <div id="winner">Winner: {this.props.ctx.gameover.winner.classCss}</div>
             if (this.props.ctx.gameover.winner.player !== undefined) {
-                console.log('Winner is => ', this.props.ctx.gameover.winner)
             }
         }
 
@@ -217,7 +211,6 @@ export class TicTacToeBoard extends React.Component {
 
                         }
 
-                        console.log(docSpan, `span${id.toString()}`);
 
                         let p = document.createElement('p');
                         p.textContent = cell.player.name;

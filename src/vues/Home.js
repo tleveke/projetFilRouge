@@ -23,7 +23,7 @@ class Home extends Component {
       let request = indexedDB.open(configGame.dbName);
 
       request.onerror = function(event) {
-        console.log("error: ", event);
+
       };
       
       request.onupgradeneeded = function(event) {
@@ -36,7 +36,7 @@ class Home extends Component {
         db = event.target.result;
         let transaction = db.transaction(["matches"], "readwrite");
         transaction.oncomplete = function(event) {
-          console.log("All done!");
+
           this.setState({ db: request.result });
           this.getLobbies();
         }.bind(this);
@@ -54,7 +54,7 @@ class Home extends Component {
             tab.push(cursor.value);
             cursor.continue();
           } else {
-            console.log("No more entries!");
+
             this.setState({ lobbies: tab });
           }
         }.bind(this);
@@ -88,7 +88,7 @@ class Home extends Component {
         () => { this.goGame(lobby) } } className = 'list-group list-group-item-action bg-danger' > { lobby.nameLobby } </li>)
     }
     render(lobbyList = this.state.lobbies) {
-      console.log(lobbyList);
+
       return ( <div className = 'text-center col-lg-5 mx-auto'>
         <img width = '300'
         className = 'mt-3'

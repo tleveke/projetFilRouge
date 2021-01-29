@@ -25,7 +25,7 @@ const Child = () => {
   
   const params = useParams();
   const history = useHistory();
-  console.log(params, params, params)
+
   const ClientFilRouge = Client({
 	game: TicTacToe,
 	board: TicTacToeBoard,
@@ -51,7 +51,7 @@ const Child = () => {
 			let request = indexedDB.open(configGame.dbName);
 		
 			request.onerror = function(event) {
-				console.log("error: ", event);
+
 			};
 		
 			request.onsuccess = function(event) {
@@ -61,7 +61,7 @@ const Child = () => {
 				const objectStoreRequest = objectStore.delete(`${params.matchID}`);
 				  
 				objectStoreRequest.onsuccess = function(event) {
-					console.log("Lobby supprimé")
+
 				};
 				
 			}.bind(this);
@@ -77,7 +77,7 @@ const Child = () => {
 	fetch(`${configGame.httpORs}://${configGame.urlServer}/games/Jeu_Fil_Rouge/${params.matchID}`)
 	  .then(response => response.json())
 	  .then((data) => {
-		console.log(data)
+
 		let show = true;
 		data.players.forEach((play) => {
 		  if (play.name === undefined) {

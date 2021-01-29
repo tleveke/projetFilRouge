@@ -33,8 +33,8 @@ router.get('/', (ctx, next) => {
     ctx.body = 'Hello world!'
 });
 router.post('/subscription', bodyParser, async (ctx, next) => {
-    console.log(ctx.request.body)
 
+    
     const bodySub = ctx.request.body;
     const client = new MongoClient(uri);
     try {
@@ -42,7 +42,7 @@ router.post('/subscription', bodyParser, async (ctx, next) => {
         await client.connect();
 
         const result = await client.db("gameFilRouge").collection("subscription").insertOne(bodySub);
-        console.log(`New listing created with the following id: ${result.insertedId}`);
+
         await client.close();
     } catch (e) {
         console.error(e);
@@ -53,8 +53,7 @@ router.post('/subscription', bodyParser, async (ctx, next) => {
 });
 
 router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, next) => {
-    console.log(ctx.request.body)
-    console.log(ctx.params.message)
+    
     const idPlayer = ctx.params.idPlayer;
     const titre = ctx.params.titre;
     const tag = ctx.params.tag;
@@ -70,7 +69,7 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
         tag: tag,
         actions: []
     };
-    console.log(params,'params !');
+
     const client = new MongoClient(uri);
     try {
         // Connect to the MongoDB cluster
@@ -78,9 +77,9 @@ router.get('/sendpush/:idPlayer/:titre/:tag/:message', bodyParser, async (ctx, n
 
         const playerSubscription = await client.db("gameFilRouge").collection("subscription").findOne({ name: idPlayer });
         let pushSubscription = playerSubscription['subscription'];
-        //console.log(playerSubscription);
+
         params.actions.push({ "action": `client/${playerSubscription['matchID']}/${playerSubscription['credentials']}/${playerSubscription['playerID']}`, "title": "Cliquez ici pour rejoindre !" });
-        console.log(params,'params','params');
+
         webpush.sendNotification(pushSubscription, JSON.stringify(params))
             .then(
                 function(data) {
@@ -113,8 +112,8 @@ router.get('/endGame/:nameLobby', bodyParser, async (ctx, next) => {
         await client.connect();
 
         const players = await client.db("gameFilRouge").collection("subscription").find({ name: { '$regex': nameLobby } }).toArray();
-        console.log(players)
-        //await client.db("gameFilRouge").collection("subscription").deleteMany({name:{'$regex': nameLobby} });
+
+        //await client.db("gameFilRouge").collection("subscription").deleteMany({name:{'$regex': nameLobby} }); // Ne marchais pas
     } catch (e) {
         console.error(e);
     } finally {

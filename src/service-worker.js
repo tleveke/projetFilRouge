@@ -180,13 +180,11 @@ self.addEventListener('message', (event) => {
 });
 self.addEventListener('push', (e) => {
   const message = e.data.json();
-  console.log(message)
   self.registration.showNotification(message.title, message);
 });
 self.addEventListener("notificationclick", (event) => {
   event.preventDefault();
   event.notification.close();
-  console.log(event.notification, 'event.notification', 'event.notification')
   self.clients.openWindow(`${event.notification.actions[0].action}`);
 
 });
